@@ -1,4 +1,9 @@
-get_game_rosters_html <- function(gm_id) {
+get_game_rosters_raw_html <- function(gm_id, verbose = T) {
+  if (verbose) {
+    message("Getting rosters (HTML)")
+  }
+  .validate_gm_id_format(gm_id)
+
   season <-
     gm_id |>
     as.character() |>
@@ -12,10 +17,26 @@ get_game_rosters_html <- function(gm_id) {
 
   "https://www.nhl.com/scores/htmlreports/{season}/RO0{game_id}.HTM" |>
     glue::glue() |>
-    rvest::read_html()
+    rvest::read_html() |>
+    tryCatch(
+      error = function(e) {
+        if (e$message |> stringr::str_detect("HTTP error 404")) {
+          stop("Roster report page not found for game ID {gm_id}" |> glue::glue())
+        } else {
+          e
+        }
+      }
+    )
 }
 
-get_game_shifts_html <- function(gm_id, side) {
+get_game_shifts_raw_html <- function(gm_id, side, verbose = T) {
+  if (verbose) {
+    message("Getting {side} shifts (HTML)" |> glue::glue())
+  }
+  .validate_gm_id_format(gm_id)
+
+  .validate_side(side)
+
   season <-
     gm_id |>
     as.character() |>
@@ -29,10 +50,24 @@ get_game_shifts_html <- function(gm_id, side) {
 
   "https://www.nhl.com/scores/htmlreports/{season}/T{ifelse(side == 'home', 'H', 'V')}0{game_id}.HTM" |>
     glue::glue() |>
-    rvest::read_html()
+    rvest::read_html() |>
+    tryCatch(
+      error = function(e) {
+        if (e$message |> stringr::str_detect("HTTP error 404")) {
+          stop("{stringr::str_to_title(side)} shift report page not found for game ID {gm_id}" |> glue::glue())
+        } else {
+          e
+        }
+      }
+    )
 }
 
-get_game_pbp_html <- function(gm_id) {
+get_game_pbp_raw_html <- function(gm_id, verbose = T) {
+  if (verbose) {
+    message("Getting play-by-play (HTML)")
+  }
+  .validate_gm_id_format(gm_id)
+
   season <-
     gm_id |>
     as.character() |>
@@ -46,11 +81,25 @@ get_game_pbp_html <- function(gm_id) {
 
   "https://www.nhl.com/scores/htmlreports/{season}/PL0{game_id}.HTM" |>
     glue::glue() |>
-    rvest::read_html()
+    rvest::read_html() |>
+    tryCatch(
+      error = function(e) {
+        if (e$message |> stringr::str_detect("HTTP error 404")) {
+          stop("Play-by-play report page not found for game ID {gm_id}" |> glue::glue())
+        } else {
+          e
+        }
+      }
+    )
 }
 
-extract_game_metadata_html <- function(html, gm_id) {
-  message("extracting metadata (html)")
+extract_game_metadata_from_raw_html <- function(html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting metadata (HTML)")
+  }
+
+  .validate_html_object(html)
+
   tables <- html |> rvest::html_table()
 
   tibble::tibble(
@@ -63,12 +112,22 @@ extract_game_metadata_html <- function(html, gm_id) {
       stringr::str_extract("(\\d+,)*\\d+") |>
       stringr::str_remove_all(",") |>
       as.integer()
-  )
+  ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting metadata from HTML report: {e$message}" |> glue::glue())
+      }
+    )
 }
 
-extract_rosters_html <- function(html, gm_id) {
-  message("extracting rosters (html)")
-  tables <- html |> rvest::html_table()
+extract_rosters_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting rosters (HTML)")
+  }
+
+  .validate_html_object(roster_html)
+
+  tables <- roster_html |> rvest::html_table()
 
   tables[[11]] |>
     tail(-1) |>
@@ -95,12 +154,22 @@ extract_rosters_html <- function(html, gm_id) {
           position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
           position = X2
         )
+    ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting rosters from HTML report: {e$message}" |> glue::glue())
+      }
     )
 }
 
-extract_scratches_html <- function(html, gm_id) {
-  message("extracting scratches (html)")
-  tables <- html |> rvest::html_table()
+extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting scratches (HTML)")
+  }
+
+  .validate_html_object(roster_html)
+
+  tables <- roster_html |> rvest::html_table()
 
   away_scratches <- tables[[13]] |> tail(-1)
   home_scratches <- tables[[14]] |> tail(-1)
@@ -117,6 +186,11 @@ extract_scratches_html <- function(html, gm_id) {
         sweater_number = X1 |> as.integer(),
         position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
         position = X2
+      ) |>
+      tryCatch(
+        error = function(e) {
+          stop("Error extracting away scratches from HTML report: {e$message}" |> glue::glue())
+        }
       )
   } else {
     away_scratches <- tibble::tibble(game_id = integer(0))
@@ -134,6 +208,11 @@ extract_scratches_html <- function(html, gm_id) {
         sweater_number = X1 |> as.integer(),
         position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
         position = X2
+      ) |>
+      tryCatch(
+        error = function(e) {
+          stop("Error extracting home scratches from HTML report: {e$message}" |> glue::glue())
+        }
       )
   } else {
     home_scratches <- tibble::tibble(game_id = integer(0))
@@ -145,43 +224,80 @@ extract_scratches_html <- function(html, gm_id) {
   )
 }
 
-extract_coaches_html <- function(html, gm_id) {
-  message("extracting coaches (html)")
-  tables <- html |> rvest::html_table()
+extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting coaches (HTML)")
+  }
+
+  .validate_html_object(roster_html)
+
+  tables <- roster_html |> rvest::html_table()
 
   tibble::tibble(
     game_id = gm_id |> as.integer(),
     name = c(tables[[15]]$X1, tables[[16]]$X1),
     venue = c("away", "home"),
     team = c(tables[[9]]$X1, tables[[9]]$X2)
-  )
+  ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting coaches from HTML report: {e$message}" |> glue::glue())
+      }
+    )
 }
 
-extract_referees_html <- function(html, gm_id) {
-  message("extracting referees (html)")
-  tables <- html |> rvest::html_table()
+extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting referees (HTML)")
+  }
+
+  .validate_html_object(roster_html)
+
+  tables <- roster_html |> rvest::html_table()
 
   tables[[18]] |>
     dplyr::transmute(
       game_id = gm_id |> as.integer(),
       name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
+    ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting referees from HTML report: {e$message}" |> glue::glue())
+      }
     )
 }
 
-extract_linesmen_html <- function(html, gm_id) {
-  message("extracting linesmen (html)")
-  tables <- html |> rvest::html_table()
+extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting linesmen (HTML)")
+  }
+
+  .validate_html_object(roster_html)
+
+  tables <- roster_html |> rvest::html_table()
 
   tables[[19]] |>
     dplyr::transmute(
       game_id = gm_id |> as.integer(),
       name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
+    ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting linesmen from HTML report: {e$message}" |> glue::glue())
+      }
     )
 }
 
-extract_shifts_html <- function(html, gm_id, side) {
-  message("extracting {side} shifts (html)" |> glue::glue())
-  html |>
+extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbose = T) {
+  if (verbose) {
+    message("Extracting {side} shifts (HTML)" |> glue::glue())
+  }
+
+  .validate_html_object(shifts_html)
+
+  .validate_side(side)
+
+  shifts_html |>
     rvest::html_table() |>
     purrr::pluck(10) |>
     dplyr::select(X1:X4) |>
@@ -230,11 +346,20 @@ extract_shifts_html <- function(html, gm_id, side) {
 
           }
         )
+    ) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting {stringr::str_to_title(side)} shifts from HTML report: {e$message}" |> glue::glue())
+      }
     )
 }
 
-extract_pbp_html <- function(html, gm_id) {
-  message("extracting play-by-play (html)")
+extract_pbp_from_raw_pbp_html <- function(pbp_html, gm_id, verbose = T) {
+  if (verbose) {
+    message("Extracting play-by-play (HTML)")
+  }
+
+  .validate_html_object(pbp_html)
 
   session <-
     gm_id |>
@@ -245,7 +370,7 @@ extract_pbp_html <- function(html, gm_id) {
   purrr::map(
     c(".evenColor", ".oddColor"),
     function(class) {
-      html |>
+      pbp_html |>
         rvest::html_elements(class) |>
         purrr::map(
           function(r) {
@@ -340,30 +465,10 @@ extract_pbp_html <- function(html, gm_id) {
         .fns = function(x) {as.integer(x)}
       )
     ) |>
-    dplyr::arrange(event_id)
-}
-
-get_game_details_html <- function(gm_id) {
-  message("getting game {gm_id} details (html)" |> glue::glue())
-  gm_id <- gm_id |> as.character()
-
-  roster_html <- get_game_rosters_html(gm_id)
-  home_shifts_html <- get_game_shifts_html(gm_id, "home")
-  away_shifts_html <- get_game_shifts_html(gm_id, "away")
-  pbp_html <- get_game_pbp_html(gm_id)
-
-  list(
-    meta = roster_html |> extract_game_metadata_html(gm_id),
-    rosters = roster_html |> extract_rosters_html(gm_id),
-    scratches = roster_html |> extract_scratches_html(gm_id),
-    coaches = roster_html |> extract_coaches_html(gm_id),
-    referees = roster_html |> extract_referees_html(gm_id),
-    linesmen = roster_html |> extract_linesmen_html(gm_id),
-    shifts =
-      dplyr::bind_rows(
-        extract_shifts_html(home_shifts_html, gm_id, "home"),
-        extract_shifts_html(away_shifts_html, gm_id, "away")
-      ),
-    pbp = pbp_html |> extract_pbp_html(gm_id)
-  )
+    dplyr::arrange(event_id) |>
+    tryCatch(
+      error = function(e) {
+        stop("Error extracting play-by-play from HTML report: {e$message}" |> glue::glue())
+      }
+    )
 }

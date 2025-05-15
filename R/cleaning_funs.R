@@ -1,5 +1,8 @@
-.extract_details_from_html_pbp <- function(html_pbp, scrape_results) {
-  message("cleaning play-by-play (html)")
+.extract_details_from_html_pbp <- function(html_pbp, scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning play-by-play (HTML)")
+  }
+
   teams <-
     c(
       scrape_results$api_results$meta$away_team,
@@ -339,8 +342,11 @@
     )
 }
 
-.extract_details_from_api_pbp <- function(api_pbp, scrape_results) {
-  message("cleaning play-by-play (api)")
+.extract_details_from_api_pbp <- function(api_pbp, scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning play-by-play (API)")
+  }
+
   home_def_side_lookup <-
     api_pbp |>
     dplyr::filter(
@@ -473,8 +479,11 @@
     dplyr::select(-c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone))
 }
 
-.join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp) {
-  message("joining html and api play-by-plays")
+.join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp, verbose = T) {
+  if (verbose) {
+    message("Joining HTML and API play-by-plays")
+  }
+
   starting_rows <- nrow(html_pbp)
 
   ret <-
@@ -621,8 +630,11 @@
     dplyr::select(-c(away, home))
 }
 
-.get_shift_events <- function(scrape_results) {
-  message("getting shift events")
+.get_shift_events <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning shift events for play-by-play")
+  }
+
   scrape_results$html_results$shifts |>
     dplyr::left_join(
       scrape_results$api_results$rosters |>
@@ -707,8 +719,11 @@
     )
 }
 
-.replace_sweater_numbers_with_player_ids <- function(html_pbp, scrape_results) {
-  message("matching on-ice sweater numbers to api ids")
+.replace_sweater_numbers_with_player_ids <- function(html_pbp, scrape_results, verbose = T) {
+  if (verbose) {
+    message("Matching on-ice sweater numbers to API IDs")
+  }
+
   html_pbp |>
     dplyr::select(
       event_id, game_period, game_seconds,
@@ -748,34 +763,55 @@
     .split_on_ice_ids()
 }
 
-.get_event_ids_with_shifts <- function(html_pbp, scrape_results, shift_events) {
-  html_pbp |>
-    .replace_sweater_numbers_with_player_ids(scrape_results) |>
-    dplyr::left_join(
-      shift_events |>
-        dplyr::mutate(end = dplyr::lead(game_seconds)) |>
-        dplyr::filter(!is.na(end)) |>
-        dplyr::mutate(
-          game_seconds =
-            purrr::map2(
-              game_seconds, end,
-              function(s, e) {
-                tibble::tibble(
-                  game_seconds = seq(s, e)
-                )
-              }
+.get_event_ids_with_shifts <- function(html_pbp, scrape_results, shift_events, verbose = T) {
+  html_pbp <-
+    html_pbp |>
+    .replace_sweater_numbers_with_player_ids(scrape_results, verbose)
+
+  shift_events <-
+    shift_events |>
+    dplyr::mutate(end = dplyr::lead(game_seconds)) |>
+    dplyr::filter(!is.na(end)) |>
+    dplyr::mutate(
+      game_seconds =
+        purrr::map2(
+          game_seconds, end,
+          function(s, e) {
+            tibble::tibble(
+              game_seconds = seq(s, e)
             )
-        ) |>
-        tidyr::unnest(game_seconds) |>
-        dplyr::select(-c(game_id, event_type, venue, end))
+          }
+        )
+    ) |>
+    tidyr::unnest(game_seconds) |>
+    dplyr::select(-c(game_id, event_type, venue, end))
+
+  dplyr::left_join(
+    html_pbp,
+    shift_events,
+    by = c(
+      "game_period",
+      "game_seconds",
+      "away_goalie",
+      "home_goalie",
+      html_pbp |>
+        colnames() |>
+        purrr::keep(
+          .p = stringr::str_detect,
+          pattern = "(home|away)_on_"
+        )
     )
+  )
 }
 
-.add_shifts_to_html_pbp <- function(html_pbp, scrape_results) {
-  message("adding shifts to play-by-play")
-  shift_events <- .get_shift_events(scrape_results)
+.add_shifts_to_html_pbp <- function(html_pbp, scrape_results, verbose = T) {
+  if (verbose) {
+    message("Adding shift events to play-by-play")
+  }
 
-  event_ids_with_shifts <- .get_event_ids_with_shifts(html_pbp, scrape_results, shift_events)
+  shift_events <- .get_shift_events(scrape_results, verbose)
+
+  event_ids_with_shifts <- .get_event_ids_with_shifts(html_pbp, scrape_results, shift_events, verbose)
 
   html_pbp |>
     dplyr::select(
@@ -786,7 +822,8 @@
     ) |>
     dplyr::left_join(
       event_ids_with_shifts |>
-        dplyr::select(-game_seconds)
+        dplyr::select(-game_seconds),
+      by = dplyr::join_by(game_period, event_id)
     ) |>
     dplyr::group_by(game_period) |>
     tidyr::fill(shift_id, .direction = "downup") |>
@@ -858,7 +895,6 @@
       event_team = ifelse(event_type == "CHANGE", event_team_html, event_team),
       shift_id = dplyr::dense_rank(shift_id)
     ) |>
-    # dplyr::select(-c(venue, event_id, event_team_html)) |>
     dplyr::select(-c(event_id)) |>
     tibble::rowid_to_column(var = "event_id") |>
     dplyr::select(
@@ -872,8 +908,10 @@
     )
 }
 
-.clean_metadata <- function(scrape_results) {
-  message("cleaning metadata")
+.clean_metadata <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning metadata")
+  }
 
   scrape_results$api_results$meta |>
     dplyr::full_join(
@@ -882,19 +920,26 @@
     )
 }
 
-.clean_game_rosters <- function(scrape_results) {
-  message("cleaning game rosters")
+.clean_game_rosters <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning game rosters")
+  }
 
   scrape_results$api_results$rosters |>
     dplyr::full_join(
       scrape_results$html_results$rosters |>
         dplyr::select(-team),
       by = dplyr::join_by(game_id, venue, sweater_number, position_category, position)
+    ) |>
+    dplyr::select(
+      game_id, api_id, name, venue, team, sweater_number, position_category, position, letter
     )
 }
 
-.clean_scratches <- function(scrape_results) {
-  message("cleaning scratches")
+.clean_scratches <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning scratches")
+  }
 
   scrape_results$html_results$scratches |>
     dplyr::select(-team) |>
@@ -908,11 +953,16 @@
           )
       ),
       by = dplyr::join_by(venue)
+    ) |>
+    dplyr::select(
+      game_id, name, venue, team, sweater_number, position_category, position, letter
     )
 }
 
-.clean_coaches <- function(scrape_results) {
-  message("cleaning coaches")
+.clean_coaches <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning coaches")
+  }
 
   scrape_results$html_results$coaches |>
     dplyr::select(-team) |>
@@ -929,8 +979,10 @@
     )
 }
 
-.clean_officials <- function(scrape_results) {
-  message("cleaning officials")
+.clean_officials <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning officials")
+  }
 
   dplyr::bind_rows(
     scrape_results$html_results$referees |>
@@ -940,8 +992,10 @@
   )
 }
 
-.clean_shifts <- function(scrape_results, clean_pbp) {
-  message("cleaning shifts")
+.clean_shifts <- function(scrape_results, clean_pbp, verbose = T) {
+  if (verbose) {
+    message("Cleaning shifts")
+  }
 
   faceoffs <-
     clean_pbp |>
@@ -1019,16 +1073,18 @@
     )
 }
 
-.clean_pbp <- function(scrape_results) {
-  message("cleaning play-by-play")
+.clean_pbp <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning play-by-play")
+  }
 
-  clean_html_pbp <- .extract_details_from_html_pbp(scrape_results$html_results$pbp, scrape_results)
+  clean_html_pbp <- .extract_details_from_html_pbp(scrape_results$html_results$pbp, scrape_results, verbose)
 
-  clean_api_pbp <- .extract_details_from_api_pbp(scrape_results$api_results$pbp, scrape_results)
+  clean_api_pbp <- .extract_details_from_api_pbp(scrape_results$api_results$pbp, scrape_results, verbose)
 
-  combined_pbp <- .join_api_pbp_to_html_pbp(clean_html_pbp, clean_api_pbp)
+  combined_pbp <- .join_api_pbp_to_html_pbp(clean_html_pbp, clean_api_pbp, verbose)
 
-  .add_shifts_to_html_pbp(combined_pbp, scrape_results) |>
+  .add_shifts_to_html_pbp(combined_pbp, scrape_results, verbose) |>
     dplyr::select(
       tidyselect::where(
         fn = (\(x) {!all(is.na(x))})
@@ -1036,14 +1092,22 @@
     )
 }
 
-clean_game_details_all_sources <- function(scrape_results) {
-  clean_meta <- .clean_metadata(scrape_results)
-  clean_rosters <- .clean_game_rosters(scrape_results)
-  clean_scratches <- .clean_scratches(scrape_results)
-  clean_coaches <- .clean_coaches(scrape_results)
-  clean_officials <- .clean_officials(scrape_results)
-  clean_pbp <- .clean_pbp(scrape_results)
-  clean_shifts <- .clean_shifts(scrape_results, clean_pbp)
+clean_game_details_all_sources <- function(scrape_results, verbose = T) {
+  if (verbose) {
+    message("Cleaning scrape results")
+  }
+
+  if (!identical(names(scrape_results), c("api_results", "html_results"))) {
+    stop("scrape_results must be the output of the get_game_details_all_sources() function")
+  }
+
+  clean_meta <- .clean_metadata(scrape_results, verbose)
+  clean_rosters <- .clean_game_rosters(scrape_results, verbose)
+  clean_scratches <- .clean_scratches(scrape_results, verbose)
+  clean_coaches <- .clean_coaches(scrape_results, verbose)
+  clean_officials <- .clean_officials(scrape_results, verbose)
+  clean_pbp <- .clean_pbp(scrape_results, verbose)
+  clean_shifts <- .clean_shifts(scrape_results, clean_pbp, verbose)
 
   list(
     game_metadata_clean = clean_meta,

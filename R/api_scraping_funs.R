@@ -1,70 +1,48 @@
-get_game_pbp_api <- function(gm_id) {
-  "https://api-web.nhle.com/v1/gamecenter/{gm_id}/play-by-play" |>
+get_game_raw_pbp_json_api <- function(gm_id, verbose = T) {
+  if (verbose) {
+    message("Getting play-by-play JSON (API)")
+  }
+  .validate_gm_id_format(gm_id)
+
+  resp <-
+    "https://api-web.nhle.com/v1/gamecenter/{gm_id}/play-by-play" |>
     glue::glue() |>
     httr::GET() |>
     httr::content(type = "text", encoding = "UTF-8") |>
     jsonlite::fromJSON()
+
+  if (!is.na(resp |> purrr::pluck("status", .default = NA))) {
+    stop("Game ID {gm_id} not found" |> glue::glue())
+  } else {
+    resp
+  }
 }
 
-get_game_shifts_api <- function(gm_id) {
-  "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={gm_id}" |>
+get_game_raw_shifts_json_api <- function(gm_id, verbose = T) {
+  if (verbose) {
+    message("Getting shift JSON (API)")
+  }
+  .validate_gm_id_format(gm_id)
+
+  resp <-
+    "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={gm_id}" |>
     glue::glue() |>
     httr::GET() |>
     httr::content(type = "text", encoding = "UTF-8") |>
     jsonlite::fromJSON()
+
+  if (!is.na(resp |> purrr::pluck("status", .default = NA))) {
+    stop("Game ID {gm_id} not found" |> glue::glue())
+  } else {
+    resp
+  }
 }
 
-extract_game_metadata_api <- function(pbp_json) {
-  message("extracting metadata (api)")
-  tibble::tibble(
-    game_id = pbp_json$id,
-    season = pbp_json$season,
-    game_date = pbp_json$gameDate |> lubridate::as_date(),
-    start_time_utc = pbp_json$startTimeUTC |> lubridate::as_datetime(),
-    session = pbp_json$gameType,
-    venue_name = pbp_json$venue$default,
-    venue_place_name = pbp_json$venueLocation$default,
-    home_team = pbp_json$homeTeam$abbrev,
-    home_team_id = pbp_json$homeTeam$id,
-    away_team = pbp_json$awayTeam$abbrev,
-    away_team_id = pbp_json$awayTeam$id,
-    home_team_place_name = pbp_json$homeTeam$placeName$default
-  )
-}
+extract_game_shifts_from_raw_shifts_json_api <- function(shifts_json, verbose = T) {
+  if (verbose) {
+    message("Extracting shifts (API)")
+  }
 
-extract_game_rosters_api <- function(pbp_json) {
-  message("extracting rosters (api)")
-  pbp_json$rosterSpots |>
-    tibble::tibble() |>
-    dplyr::transmute(
-      game_id = pbp_json$id,
-      api_id = playerId,
-      sweater_number = sweaterNumber,
-      position_category = ifelse(positionCode |> stringr::str_detect("[CLR]"), "F", positionCode),
-      position = positionCode,
-      team_id = teamId
-    ) |>
-    dplyr::left_join(
-      tibble::tibble(
-        team_id = c(pbp_json$homeTeam$id, pbp_json$awayTeam$id),
-        venue = c("home", "away"),
-        team = c(pbp_json$homeTeam$abbrev, pbp_json$awayTeam$abbrev)
-      ),
-      by = dplyr::join_by(team_id)
-    ) |>
-    dplyr::select(
-      game_id,
-      api_id,
-      venue,
-      team,
-      sweater_number,
-      position_category,
-      position
-    )
-}
-
-extract_game_shifts_api <- function(shifts_json) {
-  message("extracting shifts (api)")
   data <-
     shifts_json |>
     purrr::pluck("data") |>
@@ -116,8 +94,66 @@ extract_game_shifts_api <- function(shifts_json) {
   }
 }
 
-extract_pbp_api <- function(pbp_json) {
-  message("extracting play-by-play (api)")
+extract_game_metadata_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting metadata (API)")
+  }
+
+  tibble::tibble(
+    game_id = pbp_json$id,
+    season = pbp_json$season,
+    game_date = pbp_json$gameDate |> lubridate::as_date(),
+    start_time_utc = pbp_json$startTimeUTC |> lubridate::as_datetime(),
+    session = pbp_json$gameType,
+    venue_name = pbp_json$venue$default,
+    venue_place_name = pbp_json$venueLocation$default,
+    home_team = pbp_json$homeTeam$abbrev,
+    home_team_id = pbp_json$homeTeam$id,
+    away_team = pbp_json$awayTeam$abbrev,
+    away_team_id = pbp_json$awayTeam$id,
+    home_team_place_name = pbp_json$homeTeam$placeName$default
+  )
+}
+
+extract_game_rosters_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting rosters (API)")
+  }
+
+  pbp_json$rosterSpots |>
+    tibble::tibble() |>
+    dplyr::transmute(
+      game_id = pbp_json$id,
+      api_id = playerId,
+      sweater_number = sweaterNumber,
+      position_category = ifelse(positionCode |> stringr::str_detect("[CLR]"), "F", positionCode),
+      position = positionCode,
+      team_id = teamId
+    ) |>
+    dplyr::left_join(
+      tibble::tibble(
+        team_id = c(pbp_json$homeTeam$id, pbp_json$awayTeam$id),
+        venue = c("home", "away"),
+        team = c(pbp_json$homeTeam$abbrev, pbp_json$awayTeam$abbrev)
+      ),
+      by = dplyr::join_by(team_id)
+    ) |>
+    dplyr::select(
+      game_id,
+      api_id,
+      venue,
+      team,
+      sweater_number,
+      position_category,
+      position
+    )
+}
+
+extract_pbp_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting play-by-play (API)")
+  }
+
   pbp_json$plays |>
     dplyr::select(-typeCode) |>
     tidyr::unnest(cols = c(periodDescriptor, details)) |>
@@ -191,17 +227,4 @@ extract_pbp_api <- function(pbp_json) {
       coords_y = yCoord,
       zone_code = zoneCode
     )
-}
-
-get_game_details_api <- function(gm_id) {
-  message("getting game {gm_id} details (api)" |> glue::glue())
-  pbp_json <- get_game_pbp_api(gm_id)
-  shifts_json <- get_game_shifts_api(gm_id)
-
-  list(
-    meta = pbp_json |> extract_game_metadata_api(),
-    rosters = pbp_json |> extract_game_rosters_api(),
-    shifts = shifts_json |> extract_game_shifts_api(),
-    pbp = pbp_json |> extract_pbp_api()
-  )
 }
