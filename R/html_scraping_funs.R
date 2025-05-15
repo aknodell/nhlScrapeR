@@ -169,59 +169,70 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
 
   .validate_html_object(roster_html)
 
+  headers <-
+    roster_html |>
+    rvest::html_elements(".header") |>
+    rvest::html_text2() |>
+    stringr::str_to_upper() |>
+    stringr::str_squish()
+
   tables <- roster_html |> rvest::html_table()
 
-  away_scratches <- tables[[13]] |> tail(-1)
-  home_scratches <- tables[[14]] |> tail(-1)
+  if ("SCRATCHES" %in% headers) {
+    away_scratches <- tables[[13]] |> tail(-1) |> print()
+    home_scratches <- tables[[14]] |> tail(-1)
 
-  if (nrow(away_scratches) > 0) {
-    away_scratches <-
-      away_scratches |>
-      dplyr::transmute(
-        game_id = gm_id |> as.integer(),
-        name = X3 |> stringr::str_remove("\\(.\\)") |> stringr::str_trim(),
-        letter = X3 |> stringr::str_extract("\\(.\\)") |> stringr::str_remove_all("[\\(\\)]") |> stringr::str_trim(),
-        venue = "away",
-        team = tables[[9]] |> dplyr::pull(X1),
-        sweater_number = X1 |> as.integer(),
-        position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
-        position = X2
-      ) |>
-      tryCatch(
-        error = function(e) {
-          stop("Error extracting away scratches from HTML report: {e$message}" |> glue::glue())
-        }
-      )
+    if (nrow(away_scratches) > 0) {
+      away_scratches <-
+        away_scratches |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X3 |> stringr::str_remove("\\(.\\)") |> stringr::str_trim(),
+          letter = X3 |> stringr::str_extract("\\(.\\)") |> stringr::str_remove_all("[\\(\\)]") |> stringr::str_trim(),
+          venue = "away",
+          team = tables[[9]] |> dplyr::pull(X1),
+          sweater_number = X1 |> as.integer(),
+          position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
+          position = X2
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting away scratches from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      away_scratches <- tibble::tibble(game_id = integer(0))
+    }
+
+    if (nrow(home_scratches) > 0) {
+      home_scratches <-
+        home_scratches |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X3 |> stringr::str_remove("\\(.\\)") |> stringr::str_trim(),
+          letter = X3 |> stringr::str_extract("\\(.\\)") |> stringr::str_remove_all("[\\(\\)]") |> stringr::str_trim(),
+          venue = "home",
+          team = tables[[9]] |> dplyr::pull(X2),
+          sweater_number = X1 |> as.integer(),
+          position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
+          position = X2
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting home scratches from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      home_scratches <- tibble::tibble(game_id = integer(0))
+    }
+
+    dplyr::bind_rows(
+      away_scratches,
+      home_scratches
+    )
   } else {
-    away_scratches <- tibble::tibble(game_id = integer(0))
+    tibble::tibble(game_id = integer(0))
   }
-
-  if (nrow(home_scratches) > 0) {
-    home_scratches <-
-      home_scratches |>
-      dplyr::transmute(
-        game_id = gm_id |> as.integer(),
-        name = X3 |> stringr::str_remove("\\(.\\)") |> stringr::str_trim(),
-        letter = X3 |> stringr::str_extract("\\(.\\)") |> stringr::str_remove_all("[\\(\\)]") |> stringr::str_trim(),
-        venue = "home",
-        team = tables[[9]] |> dplyr::pull(X2),
-        sweater_number = X1 |> as.integer(),
-        position_category = ifelse(X2 %in% c("D", "G"), X2, "F"),
-        position = X2
-      ) |>
-      tryCatch(
-        error = function(e) {
-          stop("Error extracting home scratches from HTML report: {e$message}" |> glue::glue())
-        }
-      )
-  } else {
-    home_scratches <- tibble::tibble(game_id = integer(0))
-  }
-
-  dplyr::bind_rows(
-    away_scratches,
-    home_scratches
-  )
 }
 
 extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
@@ -231,19 +242,64 @@ extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
 
   .validate_html_object(roster_html)
 
+  headers <-
+    roster_html |>
+    rvest::html_elements(".header") |>
+    rvest::html_text2() |>
+    stringr::str_to_upper() |>
+    stringr::str_squish()
+
   tables <- roster_html |> rvest::html_table()
 
-  tibble::tibble(
-    game_id = gm_id |> as.integer(),
-    name = c(tables[[15]]$X1, tables[[16]]$X1),
-    venue = c("away", "home"),
-    team = c(tables[[9]]$X1, tables[[9]]$X2)
-  ) |>
-    tryCatch(
-      error = function(e) {
-        stop("Error extracting coaches from HTML report: {e$message}" |> glue::glue())
-      }
+  if ("HEAD COACHES" %in% headers) {
+    table_offset <- ifelse("SCRATCHES" %in% headers, 0, 2)
+
+    away_coach <- tables[[15 - table_offset]]
+    home_coach <- tables[[16 - table_offset]]
+
+    if (nrow(away_coach) > 0) {
+      away_coach <-
+        away_coach |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X1 |> stringr::str_squish(),
+          venue = "away",
+          team = tables[[9]]$X1
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting away coach from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      tibble::tibble(game_id = integer(0))
+    }
+
+    if (nrow(home_coach) > 0) {
+      home_coach <-
+        home_coach |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X1 |> stringr::str_squish(),
+          venue = "home",
+          team = tables[[9]]$X2
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting home coach from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      tibble::tibble(game_id = integer(0))
+    }
+
+    dplyr::bind_rows(
+      away_coach,
+      home_coach
     )
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
@@ -253,18 +309,39 @@ extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
 
   .validate_html_object(roster_html)
 
+  headers <-
+    roster_html |>
+    rvest::html_elements(".header") |>
+    rvest::html_text2() |>
+    stringr::str_to_upper() |>
+    stringr::str_squish()
+
   tables <- roster_html |> rvest::html_table()
 
-  tables[[18]] |>
-    dplyr::transmute(
-      game_id = gm_id |> as.integer(),
-      name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
-    ) |>
-    tryCatch(
-      error = function(e) {
-        stop("Error extracting referees from HTML report: {e$message}" |> glue::glue())
-      }
-    )
+  if ("OFFICIALS" %in% headers) {
+    table_offset <-
+      ifelse("SCRATCHES" %in% headers, 0, 2) +
+      ifelse("HEAD COACHES" %in% headers, 0, 2)
+
+    refs <- tables[[18 - table_offset]]
+
+    if (nrow(refs) > 0) {
+      refs |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting referees from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      tibble::tibble(game_id = integer(0))
+    }
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
@@ -274,18 +351,39 @@ extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
 
   .validate_html_object(roster_html)
 
+  headers <-
+    roster_html |>
+    rvest::html_elements(".header") |>
+    rvest::html_text2() |>
+    stringr::str_to_upper() |>
+    stringr::str_squish()
+
   tables <- roster_html |> rvest::html_table()
 
-  tables[[19]] |>
-    dplyr::transmute(
-      game_id = gm_id |> as.integer(),
-      name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
-    ) |>
-    tryCatch(
-      error = function(e) {
-        stop("Error extracting linesmen from HTML report: {e$message}" |> glue::glue())
-      }
-    )
+  if ("OFFICIALS" %in% headers) {
+    table_offset <-
+      ifelse("SCRATCHES" %in% headers, 0, 2) +
+      ifelse("HEAD COACHES" %in% headers, 0, 2)
+
+    linesmen <- tables[[19 - table_offset]]
+
+    if (nrow(linesmen) > 0) {
+      linesmen |>
+        dplyr::transmute(
+          game_id = gm_id |> as.integer(),
+          name = X1 |> stringr::str_remove("#\\d+") |> stringr::str_trim()
+        ) |>
+        tryCatch(
+          error = function(e) {
+            stop("Error extracting linesmen from HTML report: {e$message}" |> glue::glue())
+          }
+        )
+    } else {
+      tibble::tibble(game_id = integer(0))
+    }
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbose = T) {
@@ -297,61 +395,68 @@ extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbos
 
   .validate_side(side)
 
-  shifts_html |>
+  shifts_table <-
+    shifts_html |>
     rvest::html_table() |>
-    purrr::pluck(10) |>
-    dplyr::select(X1:X4) |>
-    dplyr::mutate(
-      X1 = ifelse(stringr::str_detect(X1, "Shift|Per|Total|(\\d$)"), NA_character_, X1)
-    ) |>
-    tidyr::fill(X1, .direction = "down") |>
-    dplyr::filter(stringr::str_count(X3, "\\d+:\\d+") == 2) |>
-    dplyr::transmute(
-      game_id = gm_id |> as.integer(),
-      venue = side,
-      sweater_number = X1 |> stringr::str_extract("\\d+") |> as.integer(),
-      game_period =
-        X2 |>
-        stringr::str_replace_all("OT", "4") |>
-        as.integer(),
-      shift_start =
-        purrr::map2_dbl(
-          X3,
-          game_period,
-          function(t, p) {
-            t |>
-              stringr::str_extract("^\\d+:\\d+") |>
-              stringr::str_split(":") |>
-              purrr::flatten_chr() |>
-              as.integer() |>
-              magrittr::multiply_by(c(60, 1)) |>
-              sum() |>
-              magrittr::add((p - 1) * 1200)
+    purrr::pluck(10)
 
-          }
-        ),
-      shift_end =
-        purrr::map2_dbl(
-          X4,
-          game_period,
-          function(t, p) {
-            t |>
-              stringr::str_extract("^\\d+:\\d+") |>
-              stringr::str_split(":") |>
-              purrr::flatten_chr() |>
-              as.integer() |>
-              magrittr::multiply_by(c(60, 1)) |>
-              sum() |>
-              magrittr::add((p - 1) * 1200)
+  if (nrow(shifts_table) > 0) {
+    shifts_table |>
+      dplyr::select(X1:X4) |>
+      dplyr::mutate(
+        X1 = ifelse(stringr::str_detect(X1, "Shift|Per|Total|(\\d$)"), NA_character_, X1)
+      ) |>
+      tidyr::fill(X1, .direction = "down") |>
+      dplyr::filter(stringr::str_count(X3, "\\d+:\\d+") == 2) |>
+      dplyr::transmute(
+        game_id = gm_id |> as.integer(),
+        venue = side,
+        sweater_number = X1 |> stringr::str_extract("\\d+") |> as.integer(),
+        game_period =
+          X2 |>
+          stringr::str_replace_all("OT", "4") |>
+          as.integer(),
+        shift_start =
+          purrr::map2_dbl(
+            X3,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_extract("^\\d+:\\d+") |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(60, 1)) |>
+                sum() |>
+                magrittr::add((p - 1) * 1200)
 
-          }
-        )
-    ) |>
-    tryCatch(
-      error = function(e) {
-        stop("Error extracting {stringr::str_to_title(side)} shifts from HTML report: {e$message}" |> glue::glue())
-      }
-    )
+            }
+          ),
+        shift_end =
+          purrr::map2_dbl(
+            X4,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_extract("^\\d+:\\d+") |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(60, 1)) |>
+                sum() |>
+                magrittr::add((p - 1) * 1200)
+
+            }
+          )
+      ) |>
+      tryCatch(
+        error = function(e) {
+          stop("Error extracting {stringr::str_to_title(side)} shifts from HTML report: {e$message}" |> glue::glue())
+        }
+      )
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 extract_pbp_from_raw_pbp_html <- function(pbp_html, gm_id, verbose = T) {
