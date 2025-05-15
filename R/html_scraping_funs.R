@@ -179,7 +179,7 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
   tables <- roster_html |> rvest::html_table()
 
   if ("SCRATCHES" %in% headers) {
-    away_scratches <- tables[[13]] |> tail(-1) |> print()
+    away_scratches <- tables[[13]] |> tail(-1)
     home_scratches <- tables[[14]] |> tail(-1)
 
     if (nrow(away_scratches) > 0) {
