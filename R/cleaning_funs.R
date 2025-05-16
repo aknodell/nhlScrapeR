@@ -941,22 +941,52 @@
     message("Cleaning scratches")
   }
 
-  scrape_results$html_results$scratches |>
-    dplyr::select(-team) |>
-    dplyr::left_join(
-      tibble::tibble(
-        venue = c("away", "home"),
-        team =
-          c(
-            scrape_results$api_results$meta$away_team,
-            scrape_results$api_results$meta$home_team
-          )
-      ),
-      by = dplyr::join_by(venue)
-    ) |>
-    dplyr::select(
-      game_id, name, venue, team, sweater_number, position_category, position, letter
-    )
+  api_scratches <- scrape_results$api_results$scratches
+  html_scratches <- scrape_results$html_results$scratches
+
+  if (nrow(api_scratches) > 0) {
+    if (nrow(html_scratches) > 0) {
+      api_scratches |>
+        dplyr::mutate(
+          name_caps = name |> stringr::str_to_upper()
+        ) |>
+        dplyr::left_join(
+          html_scratches |>
+            dplyr::select(
+              name_caps = name,
+              venue,
+              sweater_number,,
+              letter,
+              position_category,
+              position
+            )
+        ) |>
+        dplyr::select(
+          game_id, api_id, name, venue, team, sweater_number, position_category, position, letter
+        )
+    } else {
+      api_scratches
+    }
+  } else if (nrow(html_scratches) > 0) {
+    html_scratches |>
+      dplyr::select(-team) |>
+      dplyr::left_join(
+        tibble::tibble(
+          venue = c("away", "home"),
+          team =
+            c(
+              scrape_results$api_results$meta$away_team,
+              scrape_results$api_results$meta$home_team
+            )
+        ),
+        by = dplyr::join_by(venue)
+      ) |>
+      dplyr::select(
+        game_id, name, venue, team, sweater_number, position_category, position, letter
+      )
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 .clean_coaches <- function(scrape_results, verbose = T) {
@@ -964,19 +994,47 @@
     message("Cleaning coaches")
   }
 
-  scrape_results$html_results$coaches |>
-    dplyr::select(-team) |>
-    dplyr::left_join(
-      tibble::tibble(
-        venue = c("away", "home"),
-        team =
-          c(
-            scrape_results$api_results$meta$away_team,
-            scrape_results$api_results$meta$home_team
-          )
-      ),
-      by = dplyr::join_by(venue)
-    )
+  api_coaches <- scrape_results$api_results$coaches
+  html_coaches <- scrape_results$html_results$coaches
+
+  if (nrow(api_coaches) == 2 | nrow(html_coaches) == 0) {
+    api_coaches
+  } else {
+    if (nrow(api_coaches) != 0) {
+      api_coaches |>
+        dplyr::select(-team) |>
+        dplyr::bind_rows(
+          html_coaches |>
+            dplyr::select(-team) |>
+            dplyr::filter(!venue %in% api_coaches$venue)
+        ) |>
+        dplyr::left_join(
+          tibble::tibble(
+            venue = c("away", "home"),
+            team =
+              c(
+                scrape_results$api_results$meta$away_team,
+                scrape_results$api_results$meta$home_team
+              )
+          ),
+          by = dplyr::join_by(venue)
+        )
+    } else {
+      html_coaches |>
+        dplyr::select(-team) |>
+        dplyr::left_join(
+          tibble::tibble(
+            venue = c("away", "home"),
+            team =
+              c(
+                scrape_results$api_results$meta$away_team,
+                scrape_results$api_results$meta$home_team
+              )
+          ),
+          by = dplyr::join_by(venue)
+        )
+    }
+  }
 }
 
 .clean_officials <- function(scrape_results, verbose = T) {
@@ -984,10 +1042,26 @@
     message("Cleaning officials")
   }
 
+  referees <- {
+    if(nrow(scrape_results$api_results$referees) > 0) {
+      scrape_results$api_results$referees
+    } else {
+      scrape_results$html_results$referees
+    }
+  }
+
+  linesmen <- {
+    if(nrow(scrape_results$api_results$linesmen) > 0) {
+      scrape_results$api_results$linesmen
+    } else {
+      scrape_results$html_results$linesmen
+    }
+  }
+
   dplyr::bind_rows(
-    scrape_results$html_results$referees |>
+    referees |>
       dplyr::mutate(role = "R"),
-    scrape_results$html_results$linesmen |>
+    linesmen |>
       dplyr::mutate(role = "L")
   )
 }
@@ -997,80 +1071,84 @@
     message("Cleaning shifts")
   }
 
-  faceoffs <-
-    clean_pbp |>
-    dplyr::filter(event_type == "FAC") |>
-    dplyr::select(game_period, game_seconds, event_id, event_team_strength, event_team, event_team_zone, home_team, away_team) |>
-    dplyr::group_by(game_period, game_seconds) |>
-    dplyr::filter(event_id == min(event_id)) |>
-    dplyr::ungroup() |>
-    tidyr::pivot_longer(c(home_team, away_team), values_to = "team", names_to = "venue") |>
-    dplyr::mutate(
-      venue = venue |> stringr::str_sub(end = 4),
-      zone =
-        ifelse(
-          team == event_team,
-          event_team_zone,
-          dplyr::case_when(
-            event_team_zone == "O" ~ "D",
-            event_team_zone == "D" ~ "O",
-            T ~ event_team_zone
-          )
-        ) |>
-        stringr::str_c("ZS")
-    )
+  if (nrow(scrape_results$html_results$shifts) > 0) {
+    faceoffs <-
+      clean_pbp |>
+      dplyr::filter(event_type == "FAC") |>
+      dplyr::select(game_period, game_seconds, event_id, event_team_strength, event_team, event_team_zone, home_team, away_team) |>
+      dplyr::group_by(game_period, game_seconds) |>
+      dplyr::filter(event_id == min(event_id)) |>
+      dplyr::ungroup() |>
+      tidyr::pivot_longer(c(home_team, away_team), values_to = "team", names_to = "venue") |>
+      dplyr::mutate(
+        venue = venue |> stringr::str_sub(end = 4),
+        zone =
+          ifelse(
+            team == event_team,
+            event_team_zone,
+            dplyr::case_when(
+              event_team_zone == "O" ~ "D",
+              event_team_zone == "D" ~ "O",
+              T ~ event_team_zone
+            )
+          ) |>
+          stringr::str_c("ZS")
+      )
 
-  scrape_results$html_results$shifts |>
-    dplyr::left_join(
-      tibble::tibble(
-        venue = c("away", "home"),
-        team = c(
-          scrape_results$api_results$meta$away_team,
-          scrape_results$api_results$meta$home_team
-        )
-      ),
-      by = dplyr::join_by(venue)
-    ) |>
-    dplyr::left_join(
-      scrape_results$api_results$rosters |>
-        dplyr::select(team, sweater_number, api_id),
-      by = dplyr::join_by(team, sweater_number)
-    ) |>
-    dplyr::left_join(
-      faceoffs |>
-        dplyr::transmute(
-          game_period,
-          shift_start = game_seconds,
-          team,
-          shift_start_zone = zone
+    scrape_results$html_results$shifts |>
+      dplyr::left_join(
+        tibble::tibble(
+          venue = c("away", "home"),
+          team = c(
+            scrape_results$api_results$meta$away_team,
+            scrape_results$api_results$meta$home_team
+          )
         ),
-      by = dplyr::join_by(team, game_period, shift_start)
-    ) |>
-    dplyr::left_join(
-      faceoffs |>
-        dplyr::transmute(
-          game_period,
-          shift_end = game_seconds,
-          team,
-          shift_end_zone = zone
-        ),
-      by = dplyr::join_by(team, game_period, shift_end)
-    ) |>
-    dplyr::mutate(
-      shift_start_zone = tidyr::replace_na(shift_start_zone, "OTF"),
-      shift_end_zone = tidyr::replace_na(shift_end_zone, "OTF")
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::select(
-      game_id,
-      api_id,
-      team,
-      game_period,
-      shift_start,
-      shift_start_zone,
-      shift_end,
-      shift_end_zone
-    )
+        by = dplyr::join_by(venue)
+      ) |>
+      dplyr::left_join(
+        scrape_results$api_results$rosters |>
+          dplyr::select(team, sweater_number, api_id),
+        by = dplyr::join_by(team, sweater_number)
+      ) |>
+      dplyr::left_join(
+        faceoffs |>
+          dplyr::transmute(
+            game_period,
+            shift_start = game_seconds,
+            team,
+            shift_start_zone = zone
+          ),
+        by = dplyr::join_by(team, game_period, shift_start)
+      ) |>
+      dplyr::left_join(
+        faceoffs |>
+          dplyr::transmute(
+            game_period,
+            shift_end = game_seconds,
+            team,
+            shift_end_zone = zone
+          ),
+        by = dplyr::join_by(team, game_period, shift_end)
+      ) |>
+      dplyr::mutate(
+        shift_start_zone = tidyr::replace_na(shift_start_zone, "OTF"),
+        shift_end_zone = tidyr::replace_na(shift_end_zone, "OTF")
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::select(
+        game_id,
+        api_id,
+        team,
+        game_period,
+        shift_start,
+        shift_start_zone,
+        shift_end,
+        shift_end_zone
+      )
+  } else {
+    tibble::tibble(game_id = integer(0))
+  }
 }
 
 .clean_pbp <- function(scrape_results, verbose = T) {
@@ -1084,7 +1162,12 @@
 
   combined_pbp <- .join_api_pbp_to_html_pbp(clean_html_pbp, clean_api_pbp, verbose)
 
+  # if (nrow(scrape_results$html_reslts$shifts) > 0) {
+  #   combined_pbp <- .add_shifts_to_html_pbp(combined_pbp, scrape_results, verbose)
+  # }
+
   .add_shifts_to_html_pbp(combined_pbp, scrape_results, verbose) |>
+  # combined_pbp |>
     dplyr::select(
       tidyselect::where(
         fn = (\(x) {!all(is.na(x))})
