@@ -201,7 +201,7 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
           }
         )
     } else {
-      away_scratches <- tibble::tibble(game_id = integer(0))
+      away_scratches <- tibble::tibble()
     }
 
     if (nrow(home_scratches) > 0) {
@@ -223,7 +223,7 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
           }
         )
     } else {
-      home_scratches <- tibble::tibble(game_id = integer(0))
+      home_scratches <- tibble::tibble()
     }
 
     dplyr::bind_rows(
@@ -231,7 +231,7 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
       home_scratches
     )
   } else {
-    tibble::tibble(game_id = integer(0))
+    tibble::tibble()
   }
 }
 
@@ -272,7 +272,7 @@ extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
           }
         )
     } else {
-      tibble::tibble(game_id = integer(0))
+      tibble::tibble()
     }
 
     if (nrow(home_coach) > 0) {
@@ -290,7 +290,7 @@ extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
           }
         )
     } else {
-      tibble::tibble(game_id = integer(0))
+      tibble::tibble()
     }
 
     dplyr::bind_rows(
@@ -298,7 +298,7 @@ extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
       home_coach
     )
   } else {
-    tibble::tibble(game_id = integer(0))
+    tibble::tibble()
   }
 }
 
@@ -337,10 +337,10 @@ extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
           }
         )
     } else {
-      tibble::tibble(game_id = integer(0))
+      tibble::tibble()
     }
   } else {
-    tibble::tibble(game_id = integer(0))
+    tibble::tibble()
   }
 }
 
@@ -379,10 +379,10 @@ extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
           }
         )
     } else {
-      tibble::tibble(game_id = integer(0))
+      tibble::tibble()
     }
   } else {
-    tibble::tibble(game_id = integer(0))
+    tibble::tibble()
   }
 }
 
@@ -455,7 +455,7 @@ extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbos
         }
       )
   } else {
-    tibble::tibble(game_id = integer(0))
+    tibble::tibble()
   }
 }
 

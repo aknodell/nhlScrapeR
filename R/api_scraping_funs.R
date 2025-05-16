@@ -334,8 +334,6 @@ extract_pbp_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
           )
       )
   } else {
-    tibble::tibble(
-      game_id = integer(0)
-    )
+    tibble::tibble()
   }
 }
