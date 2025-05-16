@@ -22,10 +22,32 @@ get_game_raw_shifts_json_api <- function(gm_id, verbose = T) {
   if (verbose) {
     message("Getting shift JSON (API)")
   }
+
   .validate_gm_id_format(gm_id)
 
   resp <-
     "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={gm_id}" |>
+    glue::glue() |>
+    httr::GET() |>
+    httr::content(type = "text", encoding = "UTF-8") |>
+    jsonlite::fromJSON()
+
+  if (!is.na(resp |> purrr::pluck("status", .default = NA))) {
+    stop("Game ID {gm_id} not found" |> glue::glue())
+  } else {
+    resp
+  }
+}
+
+get_game_raw_info_json_api <- function(gm_id, verbose = T) {
+  if (verbose) {
+    message("Getting info JSON (API)")
+  }
+
+  .validate_gm_id_format(gm_id)
+
+  resp <-
+    "https://api-web.nhle.com/v1/gamecenter/{gm_id}/right-rail" |>
     glue::glue() |>
     httr::GET() |>
     httr::content(type = "text", encoding = "UTF-8") |>
@@ -149,82 +171,171 @@ extract_game_rosters_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
     )
 }
 
+extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting scratches (API)")
+  }
+
+  dplyr::bind_rows(
+    info_json$gameInfo$awayTeam$scratches |>
+      tibble::tibble() |>
+      dplyr::mutate(
+        venue = "away",
+        team = pbp_json$awayTeam$abbrev
+      ),
+    info_json$gameInfo$homeTeam$scratches |>
+      tibble::tibble() |>
+      dplyr::mutate(
+        venue = "home",
+        team = pbp_json$homeTeam$abbrev
+      )
+  ) |>
+    dplyr::transmute(
+      game_id = pbp_json$id,
+      api_id = id,
+      name = stringr::str_c(firstName$default, lastName$default, sep = " "),
+      venue,
+      team
+    )
+}
+
+extract_coaches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting coaches (API)")
+  }
+
+  dplyr::bind_rows(
+    tibble::tibble(
+      game_id = pbp_json$id,
+      name = info_json$gameInfo$awayTeam$headCoach$default,
+      venue = "away",
+      team = pbp_json$awayTeam$abbrev
+    ),
+    tibble::tibble(
+      game_id = pbp_json$id,
+      name = info_json$gameInfo$homeTeam$headCoach$default,
+      venue = "home",
+      team = pbp_json$homeTeam$abbrev
+    )
+  )
+}
+
+extract_referees_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting referees (API)")
+  }
+
+  tibble::tibble(
+    game_id = pbp_json$id,
+    name = info_json$gameInfo$referees$default
+  )
+}
+
+extract_linesmen_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+  if (verbose) {
+    message("Extracting linesmen (API)")
+  }
+
+  tibble::tibble(
+    game_id = pbp_json$id,
+    name = info_json$gameInfo$linesmen$default
+  )
+}
+
 extract_pbp_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
   if (verbose) {
     message("Extracting play-by-play (API)")
   }
 
-  pbp_json$plays |>
-    dplyr::select(-typeCode) |>
-    tidyr::unnest(cols = c(periodDescriptor, details)) |>
-    dplyr::arrange(sortOrder) |>
-    dplyr::transmute(
-      game_id = pbp_json$id,
-      game_period = number,
-      sort_order = sortOrder,
-      game_seconds =
-        purrr::map2_int(
-          timeInPeriod,
-          game_period,
-          function(t, p) {
-            t |>
-              stringr::str_split(":") |>
-              purrr::flatten_chr() |>
-              as.integer() |>
-              magrittr::multiply_by(c(60, 1)) |>
-              sum() |>
-              magrittr::add(
-                ifelse(
-                  pbp_json$gameType != 3 & p >= 5,
-                  3900,
-                  (p - 1) * 1200
+  if (length(pbp_json$plays) > 0) {
+    pbp_json$plays |>
+      dplyr::select(-typeCode) |>
+      tidyr::unnest(cols = c(periodDescriptor, details)) |>
+      dplyr::arrange(sortOrder) |>
+      dplyr::transmute(
+        game_id = pbp_json$id,
+        game_period = number,
+        sort_order = sortOrder,
+        game_seconds =
+          purrr::map2_int(
+            timeInPeriod,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(60, 1)) |>
+                sum() |>
+                magrittr::add(
+                  ifelse(
+                    pbp_json$gameType != 3 & p >= 5,
+                    3900,
+                    (p - 1) * 1200
+                  )
                 )
-              )
-          }
-        ),
-      game_strength_state = situationCode,
-      home_team_def_zone = homeTeamDefendingSide |> tryCatch(error = function(e) NA_character_),
-      event_team = eventOwnerTeamId,
-      event_type = typeDescKey,
-      event_type_detail =
-        dplyr::case_when(
-          !is.na(shotType) ~ shotType,
-          !is.na(descKey) ~ descKey,
-          T ~ NA_character_
-        ) |>
-        tryCatch(error = function(e) NA_integer_),
-      event_player_1 =
-        dplyr::case_when(
-          !is.na(winningPlayerId) ~ winningPlayerId,
-          !is.na(playerId) ~ playerId,
-          !is.na(hittingPlayerId) ~ hittingPlayerId,
-          !is.na(shootingPlayerId) ~ shootingPlayerId,
-          !is.na(committedByPlayerId) ~ committedByPlayerId,
-          !is.na(scoringPlayerId) ~ scoringPlayerId,
-          T ~ NA_integer_
-        ) |>
-        tryCatch(error = function(e) NA_integer_),
-      event_player_2 =
-        dplyr::case_when(
-          !is.na(losingPlayerId) ~ losingPlayerId,
-          !is.na(hitteePlayerId) ~ hitteePlayerId,
-          !is.na(blockingPlayerId) ~ blockingPlayerId,
-          !is.na(drawnByPlayerId) ~ drawnByPlayerId,
-          !is.na(assist1PlayerId) ~ assist1PlayerId,
-          T ~ NA_integer_
-        ) |>
-        tryCatch(error = function(e) NA_integer_),
-      event_player_3 =
-        ifelse(!is.na(assist2PlayerId), assist2PlayerId, NA_integer_) |>
-        tryCatch(error = function(e) NA_integer_),
-      penalty_class = typeCode |>
-        tryCatch(error = function(e) NA_integer_),
-      penalty_in_minutes = duration |>
-        tryCatch(error = function(e) NA_integer_),
-      event_reason_1 = reason,
-      event_reason_2 = secondaryReason,
-      coords_x = xCoord,
-      coords_y = yCoord,
-      zone_code = zoneCode
+            }
+          ),
+        game_strength_state = situationCode,
+        home_team_def_zone = homeTeamDefendingSide |> tryCatch(error = function(e) NA_character_),
+        event_team = eventOwnerTeamId,
+        event_type = typeDescKey,
+        event_type_detail =
+          dplyr::case_when(
+            !is.na(shotType) ~ shotType,
+            !is.na(descKey) ~ descKey,
+            T ~ NA_character_
+          ) |>
+          tryCatch(error = function(e) NA_integer_),
+        event_player_1 =
+          dplyr::case_when(
+            !is.na(winningPlayerId) ~ winningPlayerId,
+            !is.na(playerId) ~ playerId,
+            !is.na(hittingPlayerId) ~ hittingPlayerId,
+            !is.na(shootingPlayerId) ~ shootingPlayerId,
+            !is.na(committedByPlayerId) ~ committedByPlayerId,
+            !is.na(scoringPlayerId) ~ scoringPlayerId,
+            T ~ NA_integer_
+          ) |>
+          tryCatch(error = function(e) NA_integer_),
+        event_player_2 =
+          dplyr::case_when(
+            !is.na(losingPlayerId) ~ losingPlayerId,
+            !is.na(hitteePlayerId) ~ hitteePlayerId,
+            !is.na(blockingPlayerId) ~ blockingPlayerId,
+            !is.na(drawnByPlayerId) ~ drawnByPlayerId,
+            !is.na(assist1PlayerId) ~ assist1PlayerId,
+            T ~ NA_integer_
+          ) |>
+          tryCatch(error = function(e) NA_integer_),
+        event_player_3 =
+          ifelse(!is.na(assist2PlayerId), assist2PlayerId, NA_integer_) |>
+          tryCatch(error = function(e) NA_integer_),
+        penalty_class = typeCode |>
+          tryCatch(error = function(e) NA_integer_),
+        penalty_in_minutes = duration |>
+          tryCatch(error = function(e) NA_integer_),
+        event_reason_1 = reason,
+        event_reason_2 = secondaryReason,
+        coords_x = xCoord,
+        coords_y = yCoord,
+        zone_code = zoneCode,
+        away_goalie_api =
+          ifelse(
+            eventOwnerTeamId == pbp_json$homeTeam$id,
+            goalieInNetId,
+            NA_integer_
+          ),
+        home_goalie_api =
+          ifelse(
+            eventOwnerTeamId == pbp_json$awayTeam$id,
+            goalieInNetId,
+            NA_integer_
+          )
+      )
+  } else {
+    tibble::tibble(
+      game_id = integer(0)
     )
+  }
 }

@@ -7,10 +7,15 @@ get_game_details_api <- function(gm_id, verbose = T) {
 
   pbp_json <- get_game_raw_pbp_json_api(gm_id, verbose)
   shifts_json <- get_game_raw_shifts_json_api(gm_id, verbose)
+  info_json <- get_game_raw_info_json_api(gm_id, verbose)
 
   list(
     meta = pbp_json |> extract_game_metadata_from_raw_pbp_json_api(verbose),
     rosters = pbp_json |> extract_game_rosters_from_raw_pbp_json_api(verbose),
+    scratches = info_json |> extract_scratches_from_raw_info_json_api(pbp_json, verbose),
+    coaches = info_json |> extract_coaches_from_raw_info_json_api(pbp_json, verbose),
+    referees = info_json |> extract_referees_from_raw_info_json_api(pbp_json, verbose),
+    linesmen = info_json |> extract_linesmen_from_raw_info_json_api(pbp_json, verbose),
     shifts = shifts_json |> extract_game_shifts_from_raw_shifts_json_api(verbose),
     pbp = pbp_json |> extract_pbp_from_raw_pbp_json_api(verbose)
   )
