@@ -60,6 +60,82 @@ get_game_raw_info_json_api <- function(gm_id, verbose = T) {
   }
 }
 
+get_raw_all_teams_json_api <- function() {
+  "https://api.nhle.com/stats/rest/en/team" |>
+    httr::GET() |>
+    httr::content(type = "text", encoding = "UTF-8") |>
+    jsonlite::fromJSON() |>
+    purrr::pluck("data")
+}
+
+get_raw_team_season_schedule_json_api <- function(tm, season) {
+  "https://api-web.nhle.com/v1/club-schedule-season/{tm}/{season}" |>
+    glue::glue() |>
+    httr::GET() |>
+    httr::content(type = "text", encoding = "UTF-8") |>
+    jsonlite::fromJSON()
+}
+
+extract_all_teams_from_raw_all_teams_json <- function(all_teams_json) {
+  all_teams_json |>
+    tibble::tibble() |>
+    dplyr::rename(team_id = id)
+}
+
+extract_team_season_schedule_from_raw_season_schedule_api <- function(season_schedule_json) {
+  season_schedule_json |>
+    purrr::pluck("games") |>
+    tibble::as_tibble()
+}
+
+
+get_full_season_schedule_api <- function(season) {
+  get_raw_all_teams_json_api() |>
+    extract_all_teams_from_raw_all_teams_json() |>
+    dplyr::mutate(
+      schedule =
+      purrr::map(
+        triCode,
+        function(t) {
+          get_raw_team_season_schedule_json_api(tm = t, season = season) |>
+            extract_team_season_schedule_from_raw_season_schedule_api()
+        }
+      )
+  ) |>
+    # dplyr::select(schedule) |>
+    tidyr::unnest(schedule) |>
+    # dplyr::rename(game_id = id) |>
+    # tidyr::unnest(venue) |>
+    # dplyr::rename() |>
+    # tidyr::unnest(awayTeam, .names_repair = "unique") |>
+    # dplyr::rename(
+    #   away_team = abbrev,
+    #   away_team_id = id,
+    #   away_team_place_name = placeName
+    # ) |>
+    # tidyr::unnest(homeTeam, .names_repair = "unique") |>
+    # dplyr::rename(
+    #   home_team = abbrev,
+    #   home_team_id = id,
+    #   home_team_place_name = placeName$default
+    # ) |>
+    dplyr::transmute(
+      game_id = id,
+      season,
+      game_date = gameDate |> lubridate::as_date(),
+      start_time_utc = startTimeUTC |> lubridate::as_datetime(),
+      session = gameType,
+      venue_name = venue$default,
+      neutral_site = neutralSite,
+      home_team = homeTeam$abbrev,
+      home_team_id = homeTeam$id,
+      away_team = awayTeam$abbrev,
+      away_team_id = awayTeam$id,
+      home_team_place_name = homeTeam$placeName$default
+    ) |>
+    dplyr::distinct()
+}
+
 extract_game_shifts_from_raw_shifts_json_api <- function(shifts_json, verbose = T) {
   if (verbose) {
     message("Extracting shifts (API)")
