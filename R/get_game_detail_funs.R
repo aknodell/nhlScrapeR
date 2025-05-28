@@ -7,7 +7,43 @@ get_game_details_api <- function(gm_id, verbose = T) {
 
   pbp_json <- get_game_raw_pbp_json_api(gm_id, verbose)
   shifts_json <- get_game_raw_shifts_json_api(gm_id, verbose)
-  info_json <- get_game_raw_info_json_api(gm_id, verbose)
+  info_json <-
+    get_game_raw_info_json_api(gm_id, verbose) |>
+    tryCatch(
+      error = function(e) {
+        warning(stringr::str_c(e$message, " (Game Info)"))
+
+        list(
+          gameInfo =
+            list(
+              awayTeam =
+                list(
+                  scratches = tibble::tibble(),
+                  headCoach =
+                    list(
+                      default = character(0)
+                    )
+                ),
+              homeTeam =
+                list(
+                  scratches = tibble::tibble(),
+                  headCoach =
+                    list(
+                      default = character(0)
+                    )
+                ),
+              referees =
+                list(
+                  default = character(0)
+                ),
+              linesmen =
+                list(
+                  default = character(0)
+                )
+            )
+        )
+      }
+    )
 
   list(
     meta = pbp_json |> extract_game_metadata_from_raw_pbp_json_api(verbose),
