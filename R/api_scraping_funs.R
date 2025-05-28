@@ -252,7 +252,8 @@ extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbos
     message("Extracting scratches (API)")
   }
 
-  dplyr::bind_rows(
+  scratches <-
+    dplyr::bind_rows(
     info_json$gameInfo$awayTeam$scratches |>
       tibble::tibble() |>
       dplyr::mutate(
@@ -265,14 +266,20 @@ extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbos
         venue = "home",
         team = pbp_json$homeTeam$abbrev
       )
-  ) |>
-    dplyr::transmute(
-      game_id = pbp_json$id,
-      api_id = id,
-      name = stringr::str_c(firstName$default, lastName$default, sep = " "),
-      venue,
-      team
-    )
+  )
+
+  if (nrow(scratches) == 0) {
+    tibble::tibble()
+  } else {
+    scratches |>
+      dplyr::transmute(
+        game_id = pbp_json$id,
+        api_id = id,
+        name = stringr::str_c(firstName$default, lastName$default, sep = " "),
+        venue,
+        team
+      )
+  }
 }
 
 extract_coaches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
