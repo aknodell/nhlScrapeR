@@ -1,29 +1,69 @@
+.preclean_shifts_from_html_report <- function(html_shifts, scrape_results, verbose = T) {
+  if (verbose) {
+    message("Pre-cleaning shifts (HTML)")
+  }
+
+  s <-
+    scrape_results$api_results$meta |>
+    dplyr::pull(session)
+
+  if (nrow(html_shifts) > 0) {
+    html_shifts |>
+      dplyr::mutate(
+        shift_start = shift_start_time,
+        shift_end =
+          purrr::pmap_int(
+            list(
+              start = shift_start_time,
+              dur = duration,
+              p = game_period
+            ),
+            function(start, dur, p) {
+              min(
+                start + dur,
+                ifelse(
+                  p == 4 & s == 2,
+                  3900,
+                  p * 1200
+                )
+              )
+            }
+          )
+      )
+  } else {
+    tibble::tibble()
+  }
+}
+
 .extract_details_from_html_pbp <- function(html_pbp, scrape_results, verbose = T) {
   if (verbose) {
     message("Cleaning play-by-play (HTML)")
   }
-
-  teams <-
-    c(
-      scrape_results$api_results$meta$away_team,
-      scrape_results$api_results$meta$home_team
-    )
 
   sweater_id_lookup <-
     scrape_results$api_results$rosters |>
     dplyr::select(team, sweater_number, api_id) |>
     tidyr::unite("sweater_number", team, sweater_number, sep = "#")
 
-  html_pbp |>
+  html_pbp <-
+    html_pbp |>
     dplyr::mutate(
       event_team_html =
         ifelse(
           event_type %in%
             c(
               "BLOCK", "MISS", "SHOT", "GOAL",
-              "HIT", "GIVE", "TAKE", "FAC", "PENL", "DELPEN", "CHL"
-            ),
-          stringr::str_sub(event_description, end = 3),
+              "HIT", "GIVE", "TAKE", "FAC", "PENL",
+              "DELPEN"
+            ) |
+            (event_type == "CHL" & event_description |>
+               stringr::str_to_lower() |>
+               stringr::str_detect("home|away")),
+          stringr::str_sub(
+            event_description |>
+              stringr::str_remove("^[^A-Z]*"),
+            end = 3
+          ),
           NA_character_
         ),
       event_team_zone_html =
@@ -266,7 +306,17 @@
       sweater_id_lookup |>
         dplyr::rename(event_player_3_html = api_id),
       by = dplyr::join_by(event_player_3_sweater_html == sweater_number)
-    ) |>
+    )
+
+  teams <-
+    html_pbp |>
+    dplyr::filter(!is.na(event_team_html)) |>
+    dplyr::group_by(event_team_html) |>
+    dplyr::tally(sort = T) |>
+    head(2) |>
+    dplyr::pull(event_team_html)
+
+  html_pbp |>
     dplyr::mutate(
       event_team_html =
         ifelse(
@@ -285,7 +335,9 @@
                   "(ICING)|(GOALIE STOPPED)|(PUCK FROZEN - GOALIE)|(OFF-?SIDE)"
                 )
               ) {
-                if (next_zone == "D") {
+                if (is.na(next_zone)) {
+                  NA_character_
+                } else if (next_zone == "D") {
                   next_team
                 } else if (next_zone == "O") {
                   teams |>
@@ -417,13 +469,18 @@
             next_zone = next_faceoff_zone
           ),
           function(t, team, description, def_side, next_x, next_team, next_zone) {
+            next_zone <- tidyr::replace_na("N")
+            next_x <- tidyr::replace_na(0)
+
             if (t == "stoppage") {
               if (
                 description |>
                 stringr::str_to_lower() |>
                 stringr::str_detect("(icing)|(goalie-stopped-after-sog)|(puck-frozen)")
               ) {
-                if (next_zone == "D") {
+                if (is.na(next_zone)) {
+                  NA_character_
+                } else if (next_zone == "D") {
                   next_team
                 } else if (next_zone == "O") {
                   home_team_abb$event_team_api |>
@@ -570,7 +627,9 @@
       event_detail_1, event_detail_2, event_detail_3, coords_x, coords_y,
       event_distance_pbp = event_distance_html, home_team_def_zone,
       tidyselect::starts_with("away_on"),
-      tidyselect::starts_with("home_on")
+      tidyselect::starts_with("home_on"),
+      away_goalie_api,
+      home_goalie_api
     )
 
   if (nrow(ret) > starting_rows) {
@@ -636,7 +695,7 @@
   }
 
   scrape_results$html_results$shifts |>
-    dplyr::left_join(
+    dplyr::inner_join(
       scrape_results$api_results$rosters |>
         dplyr::select(venue, sweater_number, api_id, position),
       by = dplyr::join_by(venue, sweater_number)
@@ -794,12 +853,20 @@
       "game_seconds",
       "away_goalie",
       "home_goalie",
-      html_pbp |>
-        colnames() |>
-        purrr::keep(
-          .p = stringr::str_detect,
-          pattern = "(home|away)_on_"
-        )
+      dplyr::intersect(
+        html_pbp |>
+          colnames() |>
+          purrr::keep(
+            .p = stringr::str_detect,
+            pattern = "(home|away)_on_"
+          ),
+        shift_events |>
+          colnames() |>
+          purrr::keep(
+            .p = stringr::str_detect,
+            pattern = "(home|away)_on_"
+          )
+      )
     )
   )
 }
@@ -825,9 +892,9 @@
         dplyr::select(-game_seconds),
       by = dplyr::join_by(game_period, event_id)
     ) |>
-    dplyr::group_by(game_period) |>
-    tidyr::fill(shift_id, .direction = "downup") |>
-    dplyr::ungroup() |>
+    # dplyr::group_by(game_period) |>
+    # tidyr::fill(shift_id, .direction = "downup") |>
+    # dplyr::ungroup() |>
     dplyr::bind_rows(
       shift_events |>
         dplyr::mutate(event_id = 0) |>
@@ -835,11 +902,35 @@
         dplyr::filter(!(event_type == "CHANGE" & shift_id == max(shift_id))) |>
         dplyr::ungroup()
     ) |>
-    dplyr::arrange(
-      shift_id,
-      event_id,
-      venue
+    dplyr::group_by(game_seconds, game_period) |>
+    dplyr::mutate(
+      fac_event_id = c(event_id[event_type == "FAC"], NA) |> head(1),
+      event_sort_order =
+        dplyr::case_when(
+          event_type %in% c("SHOT", "MISS", "BLOCK", "HIT", "GIVE", "TAKE") ~
+            ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 5) |>
+            tidyr::replace_na(1),
+          event_type %in% c("STOP", "PENL", "GOAL", "PEND", "GEND") ~ 2,
+          # event_type == "CHANGE" ~ 3,
+          event_type %in% c("FAC", "PSTR") ~ 4,
+          T ~ 3
+        )
     ) |>
+    dplyr::ungroup() |>
+    dplyr::arrange(
+      game_seconds,
+      game_period,
+      event_sort_order,
+      # shift_id,
+      # venue,
+      event_id
+      # shift_id
+    ) |>
+    dplyr::mutate(
+      max_shift = shift_id |> tidyr::replace_na(-1) |> cummax(),
+      shift_id = ifelse(shift_id < max_shift, max_shift, shift_id)
+    ) |>
+    tidyr::fill(shift_id, .direction = "downup") |>
     dplyr::group_by(game_period) |>
     tidyr::fill(home_team_def_zone, .direction = "downup") |>
     dplyr::ungroup() |>
@@ -959,7 +1050,8 @@
               letter,
               position_category,
               position
-            )
+            ),
+          by = dplyr::join_by(venue, name_caps)
         ) |>
         dplyr::select(
           game_id, api_id, name, venue, team, sweater_number, position_category, position, letter
@@ -1183,6 +1275,13 @@ clean_game_details_all_sources <- function(scrape_results, verbose = T) {
   if (!identical(names(scrape_results), c("api_results", "html_results"))) {
     stop("scrape_results must be the output of the get_game_details_all_sources() function")
   }
+
+  scrape_results$html_results$shifts <-
+    .manually_clean_shifts(
+      scrape_results$html_results$shifts,
+      scrape_results$api_results$meta$game_id
+    ) |>
+    .preclean_shifts_from_html_report(scrape_results, verbose)
 
   clean_meta <- .clean_metadata(scrape_results, verbose)
   clean_rosters <- .clean_game_rosters(scrape_results, verbose)
