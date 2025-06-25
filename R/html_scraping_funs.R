@@ -402,7 +402,7 @@ extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbos
 
   if (nrow(shifts_table) > 0) {
     shifts_table |>
-      dplyr::select(X1:X4) |>
+      dplyr::select(X1:X5) |>
       dplyr::mutate(
         X1 = ifelse(stringr::str_detect(X1, "Shift|Per|Total|(\\d$)"), NA_character_, X1)
       ) |>
@@ -416,36 +416,87 @@ extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbos
           X2 |>
           stringr::str_replace_all("OT", "4") |>
           as.integer(),
-        shift_start =
-          purrr::map2_dbl(
+        shift_start_time =
+          purrr::map2_int(
             X3,
             game_period,
             function(t, p) {
               t |>
+                stringr::str_trim() |>
                 stringr::str_extract("^\\d+:\\d+") |>
                 stringr::str_split(":") |>
                 purrr::flatten_chr() |>
                 as.integer() |>
                 magrittr::multiply_by(c(60, 1)) |>
                 sum() |>
-                magrittr::add((p - 1) * 1200)
-
+                magrittr::add((p - 1) * 1200) |>
+                as.integer()
             }
           ),
-        shift_end =
-          purrr::map2_dbl(
+        shift_start_clock =
+          purrr::map2_int(
+            X3,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_trim() |>
+                stringr::str_extract("\\d+:\\d+$") |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(-60, -1)) |>
+                sum() |>
+                magrittr::add(p * 1200) |>
+                as.integer()
+            }
+          ),
+        shift_end_time =
+          purrr::map2_int(
             X4,
             game_period,
             function(t, p) {
               t |>
+                stringr::str_trim() |>
                 stringr::str_extract("^\\d+:\\d+") |>
                 stringr::str_split(":") |>
                 purrr::flatten_chr() |>
                 as.integer() |>
                 magrittr::multiply_by(c(60, 1)) |>
                 sum() |>
-                magrittr::add((p - 1) * 1200)
-
+                magrittr::add((p - 1) * 1200) |>
+                as.integer()
+            }
+          ),
+        shift_end_clock =
+          purrr::map2_int(
+            X4,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_trim() |>
+                stringr::str_extract_all("\\d+:\\d+$") |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(-60, -1)) |>
+                sum() |>
+                magrittr::add(p * 1200) |>
+                as.integer()
+            }
+          ),
+        duration =
+          purrr::map2_int(
+            X5,
+            game_period,
+            function(t, p) {
+              t |>
+                stringr::str_extract("\\d+:\\d+") |>
+                stringr::str_split(":") |>
+                purrr::flatten_chr() |>
+                as.integer() |>
+                magrittr::multiply_by(c(60, 1)) |>
+                sum() |>
+                as.integer()
             }
           )
       ) |>
