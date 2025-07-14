@@ -1,0 +1,515 @@
+Scraper issue log
+	shifts:
+		game 2019030412
+			api id 8474034
+		game 2019030151
+			api id 8471669
+			8474207
+			8475191
+			8476539
+			8477220
+			8477447
+			8480727
+			
+
+2009020885 no shift reports at all
+2009020714 no api play-by-play
+2009020658 no shift reports at all
+2009020081 no shift reports at all
+
+
+
+Notes on TOI discrepancies
+	- 2022021067 
+		- API has changes at 19:57 of second period, but PBP has a stoppage and faceoff at 19:56.  Leave the way it is
+	- 2021021189 
+		- shift reports missing DAL players on ice for GWG, easy to add those in manually (Klingberg, Robertson, Hintz, Wedgewood)
+	- 2021020452 
+		- some 1 second differences (7 skaters, 5 NYR, 2 ARI), fixed unusual manpower issues using API shifts
+	- 2021020427 
+		- some 1 second differences, matched API shifts
+	- 2021020416 
+		- some 1 second differences, matched API shifts
+	- 2021020326 
+		- missing last shift for all VAN skaters from empty net situation, easy to add those manually
+	- 2020020865 
+		- shift reports missing players from GWG (both teams), easy to add those in manually
+	- 2020020860 
+		- shift reports missing players from GWG (both teams), easy to add those in manually
+	- 2020020858 
+		- shift reports missing for all players last shift (both teams), easy to add in manually
+	- 2020020857 
+		- missing Killorn's first shift, easy to add manually
+	- 2020020810 
+		- missing two periods for peterson
+		- missing drew doughty's first second period shift
+		- missing all players from last shift of the game, added in manually
+	- 2020020762 
+		- added Krug's first shift from second period
+		- removed weird zero length shifts for Greenway and Mikkola
+	- 2020020748 
+		- missing last shift for all COL players, easy to add in manually
+	- 2020020526 
+		- missing all OT shifts, both teams, easy to add in manually
+	- 2020020367 
+		- removed weird 0 length shift for kurashev
+		- added debrincat and soderberg's first shift of third period
+	- 2020020252 
+		- all ANA on ice at GEND missing last shift
+	- 2020020124 
+		- fixed end of jeff skinner's last shift
+		- removed zero length shift for ristolainen, added ristolainen's first shift of OT
+	- 2019021076 
+		- fix heiskanen and johns' weird 3 seconds off in second period
+		- leave Brendan Smith diff (doesn't make sense for NYR to go with 3 defensemen there, possible TMM, but not called and not in PBP)
+		- extend brett howden's shift starting at 2136 to 2219
+		- remove Howden's shift from 2204 to 2219
+		- remove Kakko's shift from 2180 to 2204
+		- left some 1 second discrepancies
+	- 2019021053 
+		- TB 24, 17, 98, 71 and BOS on ice 74, 37, 63, 47, 88 still on at 2369 per YouTube highlights https://www.youtube.com/watch?v=RJR3bAW4IIg
+		- vasilievskiy doesn't leave is net, TB on ice at end 22, 55, 19, 20, BOS on ice 13, 46, 63, 47, 21 per YouTube highlights  https://www.youtube.com/watch?v=zGcLnMvMtB8
+		- have Pastrnak change at 2384 for Krejci
+		- have all TB change at 2393
+		- Add shifts for Shattenkirk and Coburn at start of third
+	- 2019021047
+		- moved shift start time for Nichushsking from 2175 to 2178
+		- moved shift start time for Erik Johnson from 2616 to 2618
+		- changed tanev shift from 2913 to 2929 to edler (edler came out of the penalty box)
+	- 2019021043
+		- all STL players on ice at end of game missing their last shift
+	- 2019021034
+		- Lots of discrepancies around the end of the MTL PP at 419, YouTube supports the HTML report/PBP https://www.youtube.com/watch?v=i-Z1IGVWKzo
+		- leave Sergachev's third period shift alone, no video, the PBP doesn't suggest tampa had an uncalled TMM
+	- 2019021019
+		- incorrect starting lineup, removed Kucherov and added Killorn and Coleman for first 43 seconds
+		- extended krejci and ritchie's PP shift to end at 228
+		- started grzelcyk's shift at 227 instead of 268
+		- fixed start for hedman's first shift of third period
+		- Added Rask's third period
+		- Added Bergeron and Coburn's first shift of the third period (39 seconds)
+	- 2019021000
+		- mismatches around the beginning of the third period (2559-2705ish) PBP on ice supports the HTML shift reports, so leaving alone
+	- 2019020963
+		- extended bernier's second period shift to cover whole period
+		- added shift for bernier to start third period until delayed penalty
+		- added first shifts for daley, mantha, and larkin
+	- 2019020941
+		- leave the way it is, no reason to think NYI played with TMM for 54 seconds (PBP doesn't support this either)
+	- 2019020937
+		- leave the way it is, API has a weird double shift for morissey for some reason
+	- 2019020898
+		- leave the way it is, API has Klefbom and Larsson starting their shift at 1858 instead of 1894 and Matt Benning has a phantom shift for the same time period (PBP has a weird 0 second on-ice event for these three at 1858)
+		- Khaira has a 1 second disparity, but nothing in the PBP to support
+	- 2019020852
+		- all DAL players on ice for EOG missing last shift, easy to add
+	- 2019020842
+		- remove Spurgeon's shift from 263 to 270 and give that time to Dumba (doesn't seem likely Spurgeon replaced Dumba for 7 seconds and then changed for Dumba again)
+		- Ignore zuccarello shift diff, API thinks he jumped on with Kunin and MIN had TMM
+	- 2019020815
+		- leave, API has Rooney and Hayden staying on the ice after the PK starts allowing NJD to play 6 on 5 when they're supposed to be shorthanded
+	- 2019020808
+		- add Slavin's first shift of OT (37 seconds)
+	- 2019020775
+		- add talbot's shift for third period
+		- add hamonic and backlund's first shifts of third period (28 seconds)
+	- 2019020772
+		- missing last shifts for all STL players on ice at EOG
+		- had Pietrangelo and Schwartz get on 10 seconds earlier to match end of Faulk and Parayko's shifts
+	- 2019020754
+		- leave, I don't think Lebanc jumped on the ice and SJ played with TMM for 12 seconds
+	- 2019020743
+		- leave, API has PP unit staying on after goal at 1771 with Matt Martin joining for TMM off the next faceoff
+	- 2019020726
+		- extend pietrangelo's last shift of third period to EOP, add his missing shift at start of OT (79 seconds)
+		- added schenn's last shift (visible on YouTube https://www.youtube.com/watch?v=ztRCxKsrbG8)
+		- extend binnington's third period to EOP, add his missing OT shift
+	- 2019020722
+		- extend bishop's third period shift to cover whole period
+		- add bishop, seguin, and lindell's shifts to start OT
+	- 2019020710
+		- this one's incredibly messy, lots of players supposedly taking extremely short shifts and then changing back to the players who were previously on.  Probably wrong, but no way to correct most of it
+		- change haley's shift starting at 126 to end at 133 (https://www.youtube.com/watch?v=oY2-SQfU9Jk) 
+		- remove howden's shift from 132 to 133
+		- leave haley's shift from 445 to 451 alone (matches PBP)
+		- leave all changes at 501 (matches PBP)
+		- have fast play full shift from 3015 to 3094 instead of stepping off for one second at 3026
+		- remove staal shift from 3168 to 3172
+		- add brassard to PP from 3219 to 3347?
+		- give staal's shift from 3424 to 3446 to chytil
+		- remove nelson and johnston shifts from 3494 to 3498
+		
+		- something's screwy with NYR defense after 14:51 of third
+			Fox, Skjei, Lindgren, Trouba, Staal available
+			
+			Staal last shift 17:04 - 17:26 (on ice with Fox and Skjei??)
+			
+			D1
+			PK
+			Trouba 14:51 - 15:45	0:54
+			Staal 15:45 - 16:18		0:33
+			Trouba 16:18 - 16:42	0:24			
+			Fox 16:42 - 17:54		1:12
+			
+			EV at 16:51
+			
+			Trouba 17:54 - 18:07	0:13
+			Fox 18:07 - 19:20		1:13
+			
+			ICING at 18:19
+			
+			Trouba 19:20 - 20:00	0:40
+			
+			D2
+			Skjei 14:51 - 15:45		0:54
+			Lindgren 15:45 - 16:18	0:33
+			Skjei 16:18 - 17:30		1:12
+			EV at 16:51
+			Lindgren 17:30 - 17:41	0:11
+			Skjei 17:41 - 17:54		0:13
+			Lindgren 17:54 - 18:04	0:10
+			NO ONE 18:04 - 18:31	0:17
+			ICING at 18:19
+			Skjei 18:31 - 19:20		0:51
+			Lindgren 19:20 - 20:00	0:40
+			
+			D3
+			Staal 17:04 - 17:26		0:22
+					
+			Proposed D2
+			Skjei 14:51 - 15:45		0:54
+			Lindgren 15:45 - 16:18	0:33
+			Skjei 16:18 - 17:04		0:46
+			Skjei 16:18 - 17:30		1:12
+			Lindgren 17:30 - 17:41	0:11
+			Skjei 17:41 - 17:54		0:13
+			Lindgren 17:54 - 18:04	0:10
+			Staal 18:04 - 18:31	0:17
+			Skjei 18:31 - 19:20		0:51
+			Lindgren 19:20 - 20:00	0:40
+	- 2019020708
+		- all TB players on ice at EOG missing last shift, added manually
+		- connor carrick briefly only NJ player from 2628 to 2630, extended all NJ players and removed carrick's shift
+		- gourde only TB player from 2628 to 2641, extended all TB players and removed gourde's shift
+		- other issues with weird 5 second or less shifts left in
+	- 2019020674
+		- added ryan miller's second period shift
+		- moved ryan miller's first third period shift from second period to third
+	- 2019020665
+		- added greiss's second period shift
+		- added hischier and palmieri's first shifts of OT
+	- 2019020628
+		- missing eichel's first shift of OT
+	- 2019020591
+		- all VGK players on ice at EOG missing last shift
+	- 2019020580
+		- remove schmidt shift from 2046 to 2047 (HTML)
+		- remove pacioretty, smith, karlsson, theordore, hague shifts from 2145 to 2153
+		- remove stastny, mcnabb, schmidt, carrier shifts starting at 2153
+		- extend stastny, tuch, carrier shifts starting at 2118 to 68 seconds
+		- extend mcnabb, schmidth shifts starting at 2118 to 50 seconds
+	- 2019020549
+		- have palmieri get off at 2442
+		- have bratt start shift at 3265 instead of 3286
+		- remove miles wood shift from 3487 to 3489
+	- 2019020535
+		- have mason's shift start at 1479 instead of 1484
+		- have holzer's shift end at 1782 instead of 1806
+		- remove getzlaf shift from 1816 to 1827
+		- remove rowney shift from 1816 to 1827
+		- remove lundestrom shift from 1827 to 1836
+		- add silfverberg and lundestrom shifts from 1806 to 1836
+		- remove del zotto shift from 1889 to 1890
+		- start holzer shift at 2208 instead of 2210
+		- start butcher shift at 2847 instead of 2844
+		- extend all ANA players whose shift ended at 2629 8 seconds
+		- have rakell's shift start at 2833 instead of 2842
+		- silfverberg shift end at 3522 instead of 3552
+	- 2019020479
+		- missing last shift for all CAR players on ice except 
+	- 2019020477
+		- remove daley, green, filppula shifts from 472 to 488 (daley and green don't play PK, nielsen and glendening coming right back on make me think they never left the ice)
+		- remove glendening, nemeth, hronek, nielsen shifts ending at 553
+		- extend glendening, nemeth, hronek shifts starting at 423 to end at 553
+		- extend nielsen shift starting at 435 to end at 553
+		- perlini start shift at 778 instead of 780
+		- extend erne shift starting from 857 to end at 888
+		- have nielsen's shift end at 1751 instead of 1761
+		- remove erne's shift from 3486 to 3497
+	- 2019020475
+		- add saros's third period shift
+		- add ellis (52) and ekholm's (61) first shifts of third
+		- extend jarnkrok's shift starting at 2461
+		to end at 2522
+		- extend gregor's shift end from 3302 to 3310
+	- 2019020457
+		- remove zero length shifts for josh brown and nick foligno
+		- remove josh brown and nick foligno from starting second period lineups
+		- no CBJ players from 120 to 129
+		- have riley nash get off at 585 instead of 611
+		- start jones and jenner's shifts at 649 instead of 659
+		- extend yandle's shift from ending at 963 to ending at 964
+		- add bobrovsky's second period shift
+	- 2019020447
+		- CHI short 2 from 249 to 261
+			- add seabrook and ?? smith?
+		- CHI and NJD both have 6 skaters from 689 to 709
+			- blackwood left ice from 689 to 709 during continuous play and returned?! DOUBT
+			- leave it alone though
+		- remove all CHI skaters on from 689 to 709
+		- remove all CHI skaters starting at 709
+		- extend gusafsson shift starting at 666 to be 63 seconds
+		- extend koekkoek shift starting at 666 to be 80 seconds
+		- extend kane and debrincat shifts starting at 679 to be 50 seconds
+		- extend strome shift starting at 679 to be 67 seconds
+	- 2019020418
+		- added koskinen, klefbom, sheahan shifts to start second period
+	- 2019020410
+		- remove chabot's shift from 3506 to 3507
+	- 2019020331
+		- extended anderson's shift to end regulation to EOP
+		- added anderson and pageau's shifts to start OT
+	- 2019020316
+		- remove all ANA shifts starting at 2489 except henrique
+		- extend fowler shift starting at 2458 to end at 2534
+		- extend getzlaf and silfverberg shifts starting at 2473 to end at 2534
+		- extend rakell shift starting at 2483 to end at 2534
+		- extend short shift starting at 2534 to end at 2594
+		- have del zotto shift ending at 2594 start at 2534 instead of 2578
+		- add fowler shift from 2594 to 2664
+		- remove all ANA shifts starting at 2666
+		- remove all ANA shifts starting at 2671
+		- extend max jones shift starting at 2633 to end at 2689
+		- extend steel shift starting at 2633 to end at 2717
+		- extend holzer shift starting at 2664 to end at 2698
+		- extend larsson shift starting at 2664 to end at 2698
+		- extend getzlaf shift starting at 2664 to end at 2717
+		- remove all ANA shifts starting at 2973 except del zotto
+		- extend holzer shift starting at 2952 to end at 2973
+		- extend guhle shift starting at 2952 to end at 2995
+		- extend deslauriers shift starting at 2952 to end at 2995
+		- extend grant shift starting at 2952 to end at 2995
+		- extend rowney shift starting at 2952 to end at 2995
+	- 2019020259
+		- added dubnyk's third period shift
+	- 2019020234
+		- all SJ players on ice at EOG missing last shift
+	- 2019020221
+		- lemiuex can't get on till 18:43 (fighting), no whistles between then and EOP, so can't have taken a shift then
+		- remove georgiev's shift starting at 1170
+		- remove lemiuex's shift from 1123 to 1157
+		- extend georgiev's shift from 279 to end at 1200
+		- extend lindgren's shift starting at 1111 to end at 1157
+		- extend strome and fast's shifts starting at 1111 to end at 1170
+		- extend lindgren's' shift starting at 1099 to end at 1170
+		
+		- remove all OTT shifts starting at 1127
+		- remove duclair's shift starting at 1123
+		- extend nilsson's shift starting at 0 to end at 1200
+		- extend namestnikov's shift starting at 1075 to end at 1170 (!)
+		- extend paul and brannstrom's shifts starting at 1111 to end at 1180
+		- extend 
+		- add brown and ennis shifts from 1123 to 1170
+	- 2019020201
+		- remove girard and compher shifts to starting at 2283
+		- have donskoi start shift at 2283 instead of 2291
+	- 2019020178
+		- have tanev start shifts at 2242 instead of 2260
+	- 2019020169
+		- have francouz's second period shift cover whole period
+		- add francouz third period shift from start to 3415
+		- add donskoi, burakovsky, and mackinnon's shifts to start third period
+	- 2019020129
+		- add andersen's OT shift
+	- 2019020072
+		- extend francouz's first period shift to cover whole period
+		- add francouz second period from start to 1260
+	- 2019020030
+		- SJ missing skater from 743 to 788 (either carick or karlsson)
+		- extend dell's shift starting at 1342 to end at 2400
+		- add dell shift from 2400 to 3471
+	- 2019020021
+		- all FLA players on ice at EOG missing last shift
+	- 2019020019
+		- change kerfoot's shift from 3520 to 3525 to johnsson (https://www.youtube.com/watch?v=B2vnhax1eQE)
+		- add hutchinson shift for OT
+	- 2019020014
+		- all WSH players on ice at EOG missing last shift
+	- 2019020011
+		- all COL players off at 2562 off at 2564 instead (no 2 seconds with 0 skaters)
+		- all COL players change at 2587 instead of 2588 (change before the faceoff instead of 1 second after the faceoff)
+	- 2018021052
+		- all PHI players on ice at EOG missing last shift
+	- 2018020963
+		- all MTL players on ice at EOG missing last shift
+	- 2018020890
+		- added scheider's third period shift
+		- removed weird zero length shifts at end of second period
+	- 2018020786
+		- all TOR players off at 1100 off at 1110 instead (no 10 seconds with 0 skaters)
+	- 2018020732
+		- all LA players on ice at EOG missing last shift
+	- 2018020681
+		- missing jones and dillon shifts to start second period
+	- 2018020592
+		- all STL players on ice at EOG missing last shift
+	- 2018020555
+		- all ARI players on ice at EOG missing last shift
+	- 2018020397
+		- removed weird zero length shifts at end of second period
+		- no way howard leaves net, extend his shift for full second period
+		- have nielsen's shift starting at 2309 start at 2322 instead
+		- remove abdelkader shift from 5v3 (starting at 2363)
+		- have bertuzzi come ot of box at 2396 instead of 2399
+		- add backes and krug shifts to start third period (end at 2441)
+	- 2018020164
+		- all OTT players on ice at EOG missing last shift
+	- 2018020144
+		- all VGK players on ice at EOG missing last shift
+	- 2018020086
+		- all STL players on ice at EOG missing last shift
+	- 2018020081
+		- missing nilson's second period shift
+		- missing baertschi, horvat, and boeser's first shift of the second period (57 seconds)
+	- 2018020072
+		- add silfverberg's last shift, start gibbons's replacement shift at 2563
+	- 2017021267
+		- all ARI players on ice at EOG missing last shift
+	- 2017021083
+		- add mcelhinney's second period shift
+	- 2017020820
+		- all ARI players on ice at EOG missing last shift
+	- 2017020666
+		- missing bennet and backlund's first shift of third period (ends at 2434)
+	- 2017020434
+		- all WPG players on ice at EOG missing last shift
+	- 2016021194
+		- all OTT players on ice at EOG left ice 5 seconds early
+	- 2016021163
+		- all WPG players on ice at EOG missing last shift
+	- 2016020936
+		- missing backes and rask's first shift of second period (55, 1200)
+	- 2016020915
+		- missing rinne's third period
+	- 2016020856
+		- missing pickard, rantanen, duchene, and comeau's first shift of second period
+	- 2016020511
+		- missing khudobin, krug, mcquaid, pastrnak, and bergeron's firs shift of second period
+	- 2016020421
+		- all OTT players on ice at EOG missing last shift
+	- 2016020419
+		- all WPG players on ice at EOG missing last shift
+	- 2016020163
+		- all VAN players on ice at EOG missing last shift
+	- 2016020139
+		- remove all zero length shifts
+		- elliott missing second period shift
+	- 2016020099
+		- all PHI players on ice at EOG missing last shift
+	- 2015021224
+		- extended dubnyk's first period shift to fill whole period
+		- had dubnyk's second period shift start at beginning of period
+	- 2015021049
+		- all EDM players on ice at EOG missing last shift
+	- 2015021003
+		- all CGY players on ice at EOG missing last shift
+	- 2015020969
+		- missing lehner's third period
+	- 2015020918
+		- all CAR players on ice at EOG missing last shift
+	- 2015020900
+		- extended talbot's second period to EOP
+		- all EDM players on ice at start of third period missing first shift
+	- 2015020866
+		- extended talbot's second period to EOP
+		- EDM D/G on ice at start of third period missing first shift
+	- 2015020849
+		- all WPG players on ice at EOG missing last shift
+		
+		
+
+venue
+"away"
+number
+16, 26, 12, 57, 33, 18
+period
+3
+start
+3555, 3555, 3555, 3555, 3573, 3573
+end 
+3600
+dur
+45, 45, 45, 45, 27, 27
+
+Notes on event cleaning
+	- 2019021053 
+		- STOP at 2334 was because a goal was scored at 2317, just remove the STOP
+		- Coburn hit on Pastrnak at 2374 probably happens when Coburn is on bench, don't know who hitter was, so just remove
+			- Coburn is still on at 2369 and BOS has possession in offensive zone per highlights on YouTube.  Seems implausible one to TB's defensemen went for a change while BOS was threatening and 5 seconds probably not enough time for TB to get puck out, TB change, BOS re-enter, and Coburn lay hit.  Coburn probably changed with the rest of the PK squad at 2393
+	- 2019020710
+		- change smith/martin penal
+	- 2019020316
+		- dupe of leipsic roughing penalty on guhle?
+	- 2019020019
+		- barrie takes blocked shot at 3525 (https://www.youtube.com/watch?v=B2vnhax1eQE)
+	- 2018020397
+		- missing FAC at 2276 (start of BOS PP)
+		
+
+2
+2
+2
+4
+5
+2
+3
+4
+2
+4
+
+best comps for games played, toi per game, best season by combined war, total combined war for players who played from 22-31
+
+	-adam larsson
+		- traded for hall 1 for 1
+		- contracts for 6, 4, and 5 years, AAVs 5.8, 4.9, 5.5
+	-jacob trouba
+		- captain of NYR
+		- contract 8 years at 9.8%
+	-marc staal
+		- contracts 5 and 6 years, AAVs 6.7, 8
+	-jack johnson
+		- traded for jeff carter
+		- contracts 7 and 5 years, AAVs 6.8%, 4.1 (second bought out)
+	-brenden dillon
+		- TOI only above 19 5 teams(3 seasons)
+		- 5 and 4 year contracts, AAV 4.6% and 4.8%
+	-roman polak
+		- 
+	-brady skjei
+		- 
+	-dimitry kulikov
+		- 
+	-damon severson
+		- 
+	-nicklas grossman
+		- 
+	
+slow starts (lose xg battle in first period)
+1
+0
+0
+1
+0
+1
+1		
+0
+1
+0
+1
+1
+0
+1
+1
+1
+0
+1
