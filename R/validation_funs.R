@@ -13,8 +13,8 @@
   session <- gm_id |> stringr::str_sub(start = 5, end = 6)
   game <- gm_id |> stringr::str_sub(start = 7)
 
-  if (season < "2007" | season > as.character(lubridate::year(lubridate::today()))) {
-    stop("Invalid game ID format: season (digits 1-4) must be between 2007 and {lubridate::year(lubridate::today())}" |> glue::glue())
+  if (season < "2009" | season > as.character(lubridate::year(lubridate::today()))) {
+    stop("Invalid game ID format: season (digits 1-4) must be between 2009 and {lubridate::year(lubridate::today())}" |> glue::glue())
   }
 
   if (!session %in% c("01", "02", "03")) {
