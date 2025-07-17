@@ -40,6 +40,12 @@
     message("Cleaning play-by-play (HTML)")
   }
 
+  session <- scrape_results$api_results$meta$session
+  game <- scrape_results$api_results$meta$game_id |> as.character()
+  round <- game |> stringr::str_sub(start = 2, end = 2)
+  series <- game |> stringr::str_sub(start = 3, end = 3)
+  series_game <- game |> stringr::str_sub(start = 4)
+
   sweater_id_lookup <-
     scrape_results$api_results$rosters |>
     dplyr::select(team, sweater_number, api_id) |>
@@ -47,7 +53,34 @@
 
   html_pbp <-
     html_pbp |>
+    # dplyr::group_by(game_period) |>
     dplyr::mutate(
+      game_seconds =
+        dplyr::case_when(
+          event_type == "PEND" ~
+            ifelse(
+              game_period < 4,
+              # regulation period
+              game_period * 1200,
+              # OT periods
+              ifelse(
+                # last OT period
+                game_period == max(game_period, na.rm = T),
+                # time of last goal scored
+                max(game_seconds, na.rm = T),
+                # not last OT period
+                ifelse(
+                  # 5 minute OT
+                  session != 3 | (session == 3 & round == "0" & series == "0"),
+                  3900,
+                  # 20 minute OT
+                  game_period * 1200
+                )
+              )
+            ),
+          event_type == "GEND" ~ max(game_seconds, na.rm = T),
+          T ~ game_seconds
+        ),
       event_team_html =
         ifelse(
           event_type %in%
@@ -399,6 +432,12 @@
     message("Cleaning play-by-play (API)")
   }
 
+  session <- scrape_results$api_results$meta$session
+  game <- scrape_results$api_results$meta$game_id |> as.character()
+  round <- game |> stringr::str_sub(start = 2, end = 2)
+  series <- game |> stringr::str_sub(start = 3, end = 3)
+  series_game <- game |> stringr::str_sub(start = 4)
+
   home_def_side_lookup <-
     api_pbp |>
     dplyr::filter(
@@ -457,6 +496,32 @@
     ) |>
     tidyr::fill(c(next_faceoff_x, next_faceoff_team, next_faceoff_zone), .direction = "up") |>
     dplyr::mutate(
+      game_seconds =
+        dplyr::case_when(
+          event_type == "period-end" ~
+            ifelse(
+              game_period < 4,
+              # regulation period
+              game_period * 1200,
+              # OT periods
+              ifelse(
+                # last OT period
+                game_period == max(game_period, na.rm = T),
+                # time of last goal scored
+                max(game_seconds, na.rm = T),
+                # not last OT period
+                ifelse(
+                  # 5 minute OT
+                  session != 3 | (session == 3 & round == "0" & series == "0"),
+                  3900,
+                  # 20 minute OT
+                  game_period * 1200
+                )
+              )
+            ),
+          event_type == "game-end" ~ max(game_seconds, na.rm = T),
+          T ~ game_seconds
+        ),
       event_team_api =
         purrr::pmap_chr(
           list(
@@ -908,12 +973,14 @@
       event_sort_order =
         dplyr::case_when(
           event_type %in% c("SHOT", "MISS", "BLOCK", "HIT", "GIVE", "TAKE") ~
-            ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 5) |>
+            ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 7) |>
             tidyr::replace_na(1),
-          event_type %in% c("STOP", "PENL", "GOAL", "PEND", "GEND") ~ 2,
-          # event_type == "CHANGE" ~ 3,
-          event_type %in% c("FAC", "PSTR") ~ 4,
-          T ~ 3
+          event_type %in% c("STOP", "PENL", "GOAL") ~ 2,
+          event_type == "PEND" ~ 3,
+          event_type == "GEND" ~ 8,
+          event_type == "FAC" ~ 5,
+          event_type == "PSTR" ~ 6,
+          T ~ 4
         )
     ) |>
     dplyr::ungroup() |>
