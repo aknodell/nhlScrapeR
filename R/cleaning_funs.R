@@ -29,7 +29,9 @@
               )
             }
           )
-      )
+      ) |>
+      # remove all zero-length shifts
+      dplyr::filter(!(shift_start_time == game_period * 1200))
   } else {
     tibble::tibble()
   }
