@@ -366,6 +366,7 @@
               if (
                 description |>
                 stringr::str_to_upper() |>
+                tidyr::replace_na("") |>
                 stringr::str_detect(
                   "(ICING)|(GOALIE STOPPED)|(PUCK FROZEN - GOALIE)|(OFF-?SIDE)"
                 )
@@ -383,6 +384,7 @@
               } else if (
                 description |>
                 stringr::str_to_upper() |>
+                tidyr::replace_na("") |>
                 stringr::str_detect("TIMEOUT\\s*-?\\s*(HOME|AWAY)")
               ) {
                 if (description |> stringr::str_to_upper() |> stringr::str_detect("HOME")) {
