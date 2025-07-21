@@ -949,6 +949,16 @@
 
   event_ids_with_shifts <- .get_event_ids_with_shifts(html_pbp, scrape_results, shift_events, verbose)
 
+  session <- scrape_results$api_results$meta$session
+  game <- scrape_results$api_results$meta$game_id |> as.character()
+  round <- game |> stringr::str_sub(start = 2, end = 2)
+  series <- game |> stringr::str_sub(start = 3, end = 3)
+  series_game <- game |> stringr::str_sub(start = 4)
+
+  has_shootout <-
+    session != 3 |
+    (session == 3 & round == "0" & series == "0")
+
   html_pbp |>
     dplyr::select(
       -c(
@@ -975,16 +985,25 @@
     dplyr::mutate(
       fac_event_id = c(event_id[event_type == "FAC"], NA) |> head(1),
       event_sort_order =
-        dplyr::case_when(
-          event_type %in% c("SHOT", "MISS", "BLOCK", "HIT", "GIVE", "TAKE") ~
-            ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 7) |>
-            tidyr::replace_na(1),
-          event_type %in% c("STOP", "PENL", "GOAL") ~ 2,
-          event_type == "PEND" ~ 3,
-          event_type == "GEND" ~ 8,
-          event_type == "FAC" ~ 5,
-          event_type == "PSTR" ~ 6,
-          T ~ 4
+        ifelse(
+          has_shootout & game_period == 5,
+          dplyr::case_when(
+            event_type == "PSTR" ~ 1,
+            event_type == "PEND" ~ 3,
+            event_type == "GEND" ~ 4,
+            T ~ 2
+          ),
+          dplyr::case_when(
+            event_type %in% c("SHOT", "MISS", "BLOCK", "HIT", "GIVE", "TAKE") ~
+              ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 7) |>
+              tidyr::replace_na(1),
+            event_type %in% c("STOP", "PENL", "GOAL") ~ 2,
+            event_type == "PEND" ~ 3,
+            event_type == "GEND" ~ 8,
+            event_type == "PSTR" ~ 5,
+            event_type == "FAC" ~ 6,
+            T ~ 4
+          )
         )
     ) |>
     dplyr::ungroup() |>
