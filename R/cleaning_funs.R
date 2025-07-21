@@ -1052,7 +1052,7 @@
           stringr::str_to_lower(event_description) |>
             stringr::str_detect("penalty shot") ~
             "Penalty Shot",
-          game_period == 5 & scrape_results$api_results$meta$session != 3 ~
+          game_period == 5 & has_shootout ~
             "Shootout",
           T ~
             "{
