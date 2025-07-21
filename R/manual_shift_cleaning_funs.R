@@ -2658,6 +2658,190 @@
           duration = c(6, 47)
         )
       )
+  } else if (g_id == 2012020534) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(18, 12, 71),
+          game_period = c(2),
+          shift_start_time = c(1200),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(1242, 1254, 1254),
+          shift_end_clock = shift_end_time,
+          duration = c(42, 54, 54)
+        )
+      )
+  } else if (g_id == 2012020526) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("away"),
+          sweater_number = c(1, 22, 33, 75, 57),
+          game_period = c(3),
+          shift_start_time = c(2400, 3549, 3549, 3549, 3596),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(3600),
+          shift_end_clock = shift_end_time,
+          duration = c(1200, 51, 51, 51, 4)
+        )
+      )
+  } else if (g_id == 2012020388) {
+    s |>
+      dplyr::mutate(
+        duration =
+          dplyr::case_when(
+            venue == "home" & game_period == 2 & sweater_number == 31 ~ 1200,
+            T ~ duration
+          )
+      ) |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(31),
+          game_period = c(3),
+          shift_start_time = c(2400),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(2947),
+          shift_end_clock = shift_end_time,
+          duration = c(547)
+        )
+      )
+  } else if (g_id == 2012020384) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(32),
+          game_period = c(2),
+          shift_start_time = c(1200),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(2400),
+          shift_end_clock = shift_end_time,
+          duration = c(1200)
+        )
+      )
+  } else if (g_id == 2012020281) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(9, 20),
+          game_period = c(3),
+          shift_start_time = c(2400),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(2417),
+          shift_end_clock = shift_end_time,
+          duration = c(17)
+        )
+      )
+  } else if (g_id == 2012020261) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(35, 44, 12, 17, 26, 47),
+          game_period = c(3),
+          shift_start_time = c(2400, 3568, 3591, 3591, 3591, 3591),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(3600),
+          shift_end_clock = shift_end_time,
+          duration = c(1200, 32, 9, 9, 9, 9)
+        )
+      )
+  } else if (g_id == 2012020179) {
+    s |>
+      dplyr::filter(
+        !(venue == "home" & sweater_number == 40 & shift_start_time == 3805),
+        !(venue == "home" & sweater_number == 17 & shift_start_time == 3805),
+        !(venue == "home" & sweater_number == 49 & shift_start_time == 3805),
+        !(venue == "away" & sweater_number == 4 & shift_start_time == 3796),
+        !(venue == "away" & sweater_number == 19 & shift_start_time == 3796),
+        !(venue == "away" & sweater_number == 62 & shift_start_time == 3796),
+        !(venue == "away" & sweater_number == 30 & shift_start_time == 3796)
+      ) |>
+      dplyr::mutate(
+        duration =
+          dplyr::case_when(
+            venue == "home" & sweater_number == 40 & shift_start_time == 3600 ~ 300,
+            venue == "home" & sweater_number == 17 & shift_start_time == 3755 ~ duration + 25 + 18,
+            venue == "home" & sweater_number == 33 & shift_start_time == 3755 ~ duration + 25,
+            venue == "home" & sweater_number == 49 & shift_start_time == 3755 ~ duration + 25 + 12,
+            venue == "home" & sweater_number == 55 & shift_start_time == 3755 ~ duration + 25,
+            venue == "away" & sweater_number == 30 & shift_start_time == 3600 ~ 300,
+            venue == "away" & sweater_number == 4 & shift_start_time == 3729 ~ duration + 16 + 27,
+            venue == "away" & sweater_number == 19 & shift_start_time == 3755 ~ duration + 16 + 19,
+            venue == "away" & sweater_number == 27 & shift_start_time == 3747 ~ duration + 16,
+            venue == "away" & sweater_number == 62 & shift_start_time == 3755 ~ duration + 16 + 9,
+            T ~ duration
+          )
+      )
+  } else if (g_id == 2012020171) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(35, 22, 12, 6, 18, 74),
+          game_period = c(2),
+          shift_start_time = c(1200),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(2400, 1257, 1256, 1245, 1245, 1245),
+          shift_end_clock = shift_end_time,
+          duration = c(1200, 57, 56, 45, 45, 45)
+        )
+      )
+  } else if (g_id == 2012020163) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(1),
+          game_period = c(4),
+          shift_start_time = c(3600),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(3900),
+          shift_end_clock = shift_end_time,
+          duration = c(300)
+        )
+      )
+  } else if (g_id == 2012020102) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("home"),
+          sweater_number = c(31, 27, 6, 11, 19, 21),
+          game_period = c(3),
+          shift_start_time = c(2400, 3499, 3503, 3521, 3595, 3595),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(3600),
+          shift_end_clock = shift_end_time,
+          duration = c(1200, 101, 97, 79, 5, 5)
+        )
+      )
+  } else if (g_id == 2012020030) {
+    s |>
+      dplyr::bind_rows(
+        tibble::tibble(
+          game_id = g_id,
+          venue = c("away"),
+          sweater_number = c(19, 28, 93),
+          game_period = c(3),
+          shift_start_time = c(2400),
+          shift_start_clock = shift_start_time,
+          shift_end_time = c(2446),
+          shift_end_clock = shift_end_time,
+          duration = c(46)
+        )
+      )
   } else {
     s
   }
