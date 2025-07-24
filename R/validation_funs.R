@@ -44,6 +44,25 @@
   }
 }
 
+.validate_gm_id_sources_complete <- function(gm_id) {
+  .validate_gm_id_shifts(gm_id)
+  .validate_gm_id_api_pbp(gm_id)
+}
+
+.validate_gm_id_shifts <- function(gm_id) {
+  if (gm_id %in% c(2009020885, 2009020658, 2009020081)) {
+    stop("{gm_id} has no shift data" |> glue::glue())
+  } else if (gm_id == 2010020124) {
+    warning("{gm_id} shift data is incomplete" |> glue::glue())
+  }
+}
+
+.validate_gm_id_api_pbp <- function(gm_id) {
+  if (gm_id == 2009020714) {
+    stop("{gm_id} has no API play-by-play data" |> glue::glue())
+  }
+}
+
 .validate_html_object <- function(html) {
   if (!identical(class(html), c("xml_document", "xml_node"))) {
     stop("html argument must be an rvest html_document object")

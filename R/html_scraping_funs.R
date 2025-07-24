@@ -33,7 +33,9 @@ get_game_shifts_raw_html <- function(gm_id, side, verbose = T) {
   if (verbose) {
     message("Getting {side} shifts (HTML)" |> glue::glue())
   }
+
   .validate_gm_id_format(gm_id)
+  .validate_gm_id_shifts(gm_id)
 
   .validate_side(side)
 

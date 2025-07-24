@@ -2,7 +2,9 @@ get_game_raw_pbp_json_api <- function(gm_id, verbose = T) {
   if (verbose) {
     message("Getting play-by-play JSON (API)")
   }
+
   .validate_gm_id_format(gm_id)
+  .validate_gm_id_api_pbp(gm_id)
 
   resp <-
     "https://api-web.nhle.com/v1/gamecenter/{gm_id}/play-by-play" |>

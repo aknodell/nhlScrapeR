@@ -108,6 +108,7 @@ get_game_details_all_sources_clean <- function(gm_id, verbose = T) {
   }
 
   .validate_gm_id_format(gm_id)
+  .validate_gm_id_sources_complete(gm_id)
 
   gm_id <- gm_id |> as.character()
 
