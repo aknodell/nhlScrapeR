@@ -11,7 +11,7 @@ Scraper issue log
 			8477447
 			8480727
 			
-
+2010020124 too many shifts missing to reconstruct shift report
 2009020885 no shift reports at all
 2009020714 no api play-by-play
 2009020658 no shift reports at all
@@ -425,21 +425,303 @@ Notes on TOI discrepancies
 		- EDM D/G on ice at start of third period missing first shift
 	- 2015020849
 		- all WPG players on ice at EOG missing last shift
+	- 2015020825
+		- remove weird zero length shift from farham at end of third period
+		- all NJD players on ice from 3300 to 3302 missing, extend all shifts 2 seconds, except scheider to end of period
+		- extend scheider shift from 3302 to end of period
+		- add schneider's OT shift
+		- add greene's shift to start OT
+		- left some 1-2 second TOI mismatches for PHI
+	- 2015020560
+		- all CHI players on ice at EOG missing last shift
+	- 2015020504
+		- all DAL players on ice at EOG missing last shift
+	- 2015020306
+		- all MIN players on ice at EOG missing last shift
+	- 2015020260
+		- missing bennett's last shift
+	- 2015020212
+		- remove Miller shift ending at 1407
+		- have Miller play full second period
+		- remove Kinkaid shift ending at 1426
+		- have Kinkaid play full second period
+		- extend all VAN shifts ending at 1407 to end at 1433
+		- extend all NJD skater shifts ending at 1426 to end at 1433
+	- 2015020008
+		- all EDM players on ice at EOG missing last shift
+	- 2014021210
+		- missing berra, guenin, and holden first shift of third period
+	- 2014021197
+		- all COL players on ice at EOG missing last shift
+	- 2014021079
+		- remove allen shift ending at 3300
+		- have allen play full third period
+		- extend all STL shifts ending at 3300 to end at 3302
+	- 2014021057
+		all MIN players on ice at EOG missing last shift
+	- 2014021036
+		- missing ellis, forsberg, and smith's first shift of third period
+	- 2014021011
+		- all CHI players on ice at EOG missing last shift
+	- 2014021001
+		- missing gibson, fowler, cogliano, and silfverberg's first shift of third period
+	- 2014020942
+		- fix blip from 3539 to 3540 where all NSH players leave ice
+	- 2014020833
+		- fix blip from 3780 to 3782 where all CHI players leave ice
+		- fix blip form 3780 to 3796 where all PIT players leave ice
+	- 2014020780
+		- missing dubnyk's third period
+	- 2014020681
+		- all LAK players on ice at EOG missing last shift
+	- 2014020608
+		- missing kinkaid's second period
+	- 2014020588
+		- remove falk zero-length shift
+		- add kuemper, suter, and brodin's first shift of second period
+	- 2014020555
+		- all EDM players on ice at EOG missing last shift
+	- 2014020552
+		- remove zero-length shifts from end of second period
+		- add niemi, marleau, and couture shifts to start third period
+	- 2014020528
+		- all ANA players on ice at EOG missing last shift
+	- 2014020521
+		- missing tarasenko and allen's last shift
+	- 2014020520
+		- all MIN players on ice at EOG missing last shift
+	- 2014020477
+		- all WPG players missing first shift of third period
+	- 2014020437
+		- remove zero-length shifts from end of third period
+		- extend montoya's third period shift to cover whole period
+		- add montoya's OT shift
+	- 2014020414
+		- remove zero-length shifts from end of first period
+		- add bishop's first period shift
+		- add holtby, orpik, and wilson's first second period shifts
+	- 2014020217
+		- add andersen, lack, silfverberg, d sedin, and h sedin's first shift of OT
+		- fix blip from 3598 to 3599 where ANA has not players on ice
+		- extend andersen and getzlaf's last shift of third period 2 seconds
+	- 2014020165
+		- add ward and nash's first shift of third period
+	- 2014020120
+		- all ANA players on ice at EOG missing last shift 
+	- 2014020101
+		- remove zero-length shifts from end of second period
+		- add jordie benn's first shift of third period
+	- 2014020023
+		- add khudobin's second period shift
+	- 2014020017
+		- remove zero-length shifts from end of second period
+		- add halak's third period shift
+	- 2014020003
+		- have hiller play full second period
+		- have hiller's first shift of third period end at 3515
+	- 2013021142
+		- all EDM players on ice at EOG missing last shift
+	- 2013021093
+		- missing greiss, michalek, ekman-larsson, and korpikoski shifts to start third period
+	- 2013021058
+		- all OTT players on ice at EOG missing last shift
+	- 2013021049
+		- regehr should get out of the box at 3773 instead of 3737
+	- 2013020891
+		- extend lehner's first period shift to cover whole period
+		- missing lehner, michalek, greening, and spezza's first shift of second period
+	- 2013020814
+		- all COL players on ice at EOG missing last shift
+	- 2013020806
+		- missing nabokov, okposo, vanek, and tavares's first shift of second period
+	- 2013020664
+		- extend mazanec's second period shift to cover whole period
+		- missing mazanec, smith, weber, and josi's first shift of third period
+	- 2013020630
+		- all OTT players on ice at EOG missing last shift
+	- 2013020607
+		- extend niemi's second period shift to cover whole period
+		- add niemi, stuart, and braun's first shift of third period
+	- 2013020515
+		- add beagle's shift from 2417 to 2457 (comes out of the box after serving wilson's penalty)
+	- 2013020399
+		- all CHI players on ice at EOG missing last shift
+	- 2013020271
+		- extend thomas's second period shift to cover whole period
+		- add thomas, campbell, and gilbert's first shifts fo third period
+	- 2013020257
+		- missing lundqvist, girardi, and mcdonagh's first shift of second period
+	- 2013020077
+		- add missing setoguchi shifts, one coming out of the box (1314 to 1320) and one just missing (1459 to 1506)
+	- 2012020534
+		- missing neal, malkin, and iginla's first shift of second period
+	- 2012020526
+		- all STL players on ice at EOG missing last shift
+	- 2012020388
+		- extend price's second period shift to cover whole period
+		- add price's first shift of third period
+	- 2012020384
+		- missing backstrom's second period shift
+	- 2012020281
+		- missing koivu and suter's first shfit of third period
+	- 2012020261
+		- all CGY players on ice at EOG missing last shift
+	- 2012020179
+		- fix blip in OT with no players on ice for either team
+		- have lundqvist and rask play full OT period
+		- for NYR Richards, hagelin, del zotto, mcdonagh extend shifts ending at 3780 by 16 seconds
+		- for BOS lucic, peverley, boychuk, chara extend shifts ending at 3798 by 25 seconds
+	- 2012020171
+		- all NSH players on ice at start of second period missing first shift
+	- 2012020163
+		- elliott missing OT shift
+	- 2012020102
+		- all CAR players on ice at EOG missing last shift
+	- 2012020030
+		- missing hartnell, giroux, and voracek's first shift of third period
+	- 2011021077
+		- extend neuvirth's second period shift to end of period
+		- add neuvirth, wideman, ovechkin, aucoin, and schultz's first shift of third period
+	- 2011020980
+		- hacket, heatley, brodziak, johnson, and scandella missing first shift of second period
+	- 2011020799
+		- all CAR players on ice at EOG missing last shift
+	- 2011020768
+		- all PHI players on ice at EOG missing last shift
+	- 2011020606
+		- elliott, pietrangelo, and coliaiacovo missing first shift of third period
+	- 2011020499
+		- extend niemi's first period shift to end of period
+		- add niemi's first second period shift
+	- 2011020409
+		- all PIT players on ice at EOG missing last shift
+	- 2011020264
+		- add reaves's shift when he comes out of the box (1484 to 1492)
+	- 2011020175
+		- extend labarbera's second period shift to end of period
+		- add labarbera's first third period shift
+	- 2011020103
+		- all WPG players missing first shift of second period
+	- 2011020094
+		- lehtonen missing third period shift
+	- 2010021175
+		- coburn and richards missing first shift of third period
+	- 2010021160
+		- all PHI players on ice at EOG missing last shift
+	- 2010021122
+		- fix blips from 1355 to 1358 where no players are on ice for one or both teams
+	- 2010021085
+		- all CGY players on ice at EOG missing last shift
+	- 2010021065
+		- have havlat play last 70 seconds of game instead of getting off the ice for 40 seconds (MIN played a man down?)
+	- 2010021006
+		- missing benn, ott, and lehtonen's first shift of second period
+	- 2010020996
+		- fix blips where BOS and the MTL have no players on ice
+	- 2010020924
+		- all NSH players on ice at EOG missing last shift
+	- 2010020870
+		- have lundqvist play full first and second periods, third period till 3518
+		- missing girardi and staal's first shift of second period
+		- missing dubinsky, callahan, anisimov, mcdonaugh, and sauer's first shift of third period
+	- 2010020662
+		- missing fedotenko's first shift of third period
+	- 2010020523
+		- all TBL players on ice at EOG missing last shift
+	- 2010020284
+		- all BUF players on ice at EOG missing last shift
+	- 2010020201
+		- khabibulin missing third period shift
+	- 2010020122
+		- luongo, kesler, bieksa, alberts missing first shift of second period
+		- all COL and VAN players on ice at EOG missing last shift
+	- 2010020068
+		- all CAR players on ice at EOG missing last shift
+	- 2009021227
+		- all NJD players on ice at EOG missing last shift
+	- 2009021170
+		- missing lundqvist, stall, gaborik and christensen's first shift of third period
+	- 2009021141
+		- missing bryzgalov, michaelek, hanzal, korpikoski, and jovanovski's first shift of second period
+		- missing bryzgalov, hanzal, and vrbata's first shift of third period
+		- PPs all messed up:
+			- VAN min PENL (salo) at 11:53, ends at 13:53 (no goals scored)
+			- VAN maj PENL (kesler) at 13:42, ends at 18:42, served by glass
+			- VAN min PENL (bieksa) at 13:42, doesn't start till 13:53, ends at 15:53, offsetting
+			- PHX min PENL (morris) at 13:42, offsetting
+			
+			- 3v5 from 13:42 to 13:53
+			- 4v5 from 13:53 to 18:42
+			- bieksa and morris let out of box at 16:20 (first whistle after offsetting penalties expire)
+			- glass comes out of the box at 18:42
 		
+		- remove bieksa's shift from 953 to 977
+		- remove albert's shift from 980 to 996
+		- have erhoff's shift start at 980 instead of 977
+		- remove burrows's sfhit from 1040 to 1080
+		- remove raymond's shift from 1080 to 1122
+		- add glass's shift from 1122 to 1140
+	- 2009021132
+		- have lehtonen play full second period
+		- missing lehtonen, robidas, lehtinen, and skrastins first shift of third period
+	- 2009021131
+		- have backstrom play full second period
+		- add backstrom and zidlicky's first shift of third period
+	- 2009021112
+		- lalime play rest of second period
+		- add lalime, grier, and myers's first shift of third period
+	- 2009021098
+		- add biron and streit's first shifts of second period
+		- fix blip at end of period where no NYI players are on ice
+	- 2009021067
+		- all LAK players missing first shift of third period
+	- 2009021038
+		- add luongo's second first period shift
+		- have luongo play full second period
+	- 2009021030
+		- sekera, lydman, and pomminville missing first shift of second period
+	- 2009020979
+		- all TBL player on ice at EOG missing last shift
+	- 2009020918
+		- fix blip with no MIN players on ice
+	- 2009020898
+		- missing brodeur, elias, and mottau's first shift of second period
+	- 2009020871
+		- all SJS players on ice at EOG missing last shift
+	- 2009020708
+		- fix blip with no DAL player on ice
+	- 2009020665
+		- all PHI players on ice at EOG missing last shift
+	- 2009020652
+		- luongo, ehrhoff, o'brien missing first shift of third period
+	- 2009020609
+		- extend leighton's third period shift to cover whole third period
+		- add timonen's las shift of third period
+		- add leighton, timonen, pronger, and betts's OT shifts
+	- 2009020541
+		- extend bryzgalov's second period shift to cover whole period
+		- add bryzgalov, jovanovski, and michalek's first shift of third period
+	- 2009020494
+		- remove greene's last shift of second period and extend brodeur's second period shift to cover whole period
+		- add greene's first shift of third
 		
+Additional notes on shifts:
+	- possibly have change be first event of new shift iff there's no faceoff
+	- some kind of special end of period where there's a change after the period ends?
+	- sort order messes up shoot-outs.  worth fixing?
 
 venue
-"away"
+"home"
 number
-16, 26, 12, 57, 33, 18
+6
 period
 3
 start
-3555, 3555, 3555, 3555, 3573, 3573
-end 
-3600
+2400
+end
+2446
 dur
-45, 45, 45, 45, 27, 27
+22, 46
 
 Notes on event cleaning
 	- 2019021053 
@@ -454,62 +736,12 @@ Notes on event cleaning
 		- barrie takes blocked shot at 3525 (https://www.youtube.com/watch?v=B2vnhax1eQE)
 	- 2018020397
 		- missing FAC at 2276 (start of BOS PP)
-		
+	- 2014021011
+		- PENL at 3561 instead of 3562
+	- 2014020833
+		- PEND at 3900 instead of 3780
+	- 2010021122
+		- EISTR should be at 2279 instead of 1355
 
-2
-2
-2
-4
-5
-2
-3
-4
-2
-4
 
-best comps for games played, toi per game, best season by combined war, total combined war for players who played from 22-31
 
-	-adam larsson
-		- traded for hall 1 for 1
-		- contracts for 6, 4, and 5 years, AAVs 5.8, 4.9, 5.5
-	-jacob trouba
-		- captain of NYR
-		- contract 8 years at 9.8%
-	-marc staal
-		- contracts 5 and 6 years, AAVs 6.7, 8
-	-jack johnson
-		- traded for jeff carter
-		- contracts 7 and 5 years, AAVs 6.8%, 4.1 (second bought out)
-	-brenden dillon
-		- TOI only above 19 5 teams(3 seasons)
-		- 5 and 4 year contracts, AAV 4.6% and 4.8%
-	-roman polak
-		- 
-	-brady skjei
-		- 
-	-dimitry kulikov
-		- 
-	-damon severson
-		- 
-	-nicklas grossman
-		- 
-	
-slow starts (lose xg battle in first period)
-1
-0
-0
-1
-0
-1
-1		
-0
-1
-0
-1
-1
-0
-1
-1
-1
-0
-1
