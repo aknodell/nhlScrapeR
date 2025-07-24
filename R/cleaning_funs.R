@@ -98,7 +98,15 @@
             event_description |>
               stringr::str_remove("^[^A-Z]*"),
             end = 3
-          ),
+          ) |>
+            stringr::str_replace_all(
+              c(
+                "L.A" = "LAK",
+                "N.J" = "NJD",
+                "S.J" = "SJS",
+                "T.B" = "TBL"
+              )
+            ),
           NA_character_
         ),
       event_team_zone_html =
