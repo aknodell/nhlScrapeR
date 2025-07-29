@@ -320,7 +320,7 @@
 - 2017021267
 	- All ARI players on ice at EOG missing last shift
 - 2017021083
-	- add McElhinney's second period shift
+	- Add McElhinney's second period shift
 - 2017020820
 	- All ARI players on ice at EOG missing last shift
 - 2017020666
@@ -331,6 +331,8 @@
 	- All OTT players on ice at EOG left ice 5 seconds early
 - 2016021163
 	- All WPG players on ice at EOG missing last shift
+- 2016020963
+  - Have Ganger come out of penalty box at 215 instead of 206
 - 2016020936
 	- Add Backes and Rask's first shift of second period (55, 1200)
 - 2016020915

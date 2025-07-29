@@ -1514,6 +1514,20 @@
           duration = c(25)
         )
       )
+  } else if (g_id == 2016020963) {
+    s |>
+      dplyr::mutate(
+        shift_start_time =
+          dplyr::case_when(
+            venue == "away" & sweater_number == 89 & shift_start_time == 206 ~ 215,
+            T ~ shift_start_time
+          ),
+        duration =
+          dplyr::case_when(
+            venue == "away" & sweater_number == 89 & shift_start_time == 215 ~ duration - 9,
+            T ~ duration
+          )
+      )
   } else if (g_id == 2016020936) {
     s |>
       dplyr::bind_rows(
