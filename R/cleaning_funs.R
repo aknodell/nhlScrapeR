@@ -83,6 +83,16 @@
           event_type == "GEND" ~ max(game_seconds, na.rm = T),
           T ~ game_seconds
         ),
+      desc =
+        event_description |>
+        stringr::str_replace_all(
+          c(
+            "(?<=\\b)L\\.A(?=[\\s\\#])" = "LAK",
+            "(?<=\\b)N\\.J(?=[\\s\\#])" = "NJD",
+            "(?<=\\b)S\\.J(?=[\\s\\#])" = "SJS",
+            "(?<=\\b)T\\.B(?=[\\s\\#])" = "TBL"
+          )
+        ),
       event_team_html =
         ifelse(
           event_type %in%
@@ -91,42 +101,34 @@
               "HIT", "GIVE", "TAKE", "FAC", "PENL",
               "DELPEN"
             ) |
-            (event_type == "CHL" & event_description |>
+            (event_type == "CHL" & desc |>
                stringr::str_to_lower() |>
                stringr::str_detect("home|away")),
           stringr::str_sub(
-            event_description |>
+            desc |>
               stringr::str_remove("^[^A-Z]*"),
             end = 3
-          ) |>
-            stringr::str_replace_all(
-              c(
-                "L.A" = "LAK",
-                "N.J" = "NJD",
-                "S.J" = "SJS",
-                "T.B" = "TBL"
-              )
-            ),
+          ),
           NA_character_
         ),
       event_team_zone_html =
-        event_description |>
+        desc |>
         stringr::str_to_upper() |>
         stringr::str_extract("(OFF|DEF|NEU)\\.? ZONE") |>
         stringr::str_sub(end = 1),
       event_player_1_sweater_html =
         dplyr::case_when(
           event_type == "FAC" ~
-            event_description |>
+            desc |>
             stringr::str_extract(stringr::str_c(event_team_html, '\\s*#\\d+')),
           event_type %in% c("MISS", "BLOCK", "PENL", "HIT") ~
-            event_description |>
+            desc |>
             stringr::str_extract('[A-Z\\.]{3}\\s*#\\d+'),
           event_type %in% c("SHOT", "GOAL", "GIVE", "TAKE") ~
             stringr::str_c(
               event_team_html |>
                 stringr::str_c(
-                  event_description |>
+                  desc |>
                     stringr::str_extract('#\\d+')
                 )
             ),
@@ -136,13 +138,13 @@
       event_player_2_sweater_html =
         dplyr::case_when(
           event_type %in% c("FAC", "PENL", "HIT", "BLOCK") ~
-            event_description |>
+            desc |>
             stringr::str_remove(event_player_1_sweater_html) |>
             stringr::str_extract('[A-Z\\.]{3}\\s?#\\d+'),
           event_type == "GOAL" ~
             stringr::str_c(
               event_team_html,
-              event_description |>
+              desc |>
                 stringr::str_remove(
                   event_player_1_sweater_html |>
                     stringr::str_extract("#\\d+")
@@ -157,7 +159,7 @@
           event_type == "GOAL" ~
             stringr::str_c(
               event_team_html,
-              event_description |>
+              desc |>
                 stringr::str_remove(
                   event_player_1_sweater_html |>
                     stringr::str_extract("#\\d+")
@@ -178,7 +180,7 @@
       event_detail_1_html =
         purrr::map2_chr(
           event_type,
-          event_description,
+          desc,
           function(t, d) {
             if (t %in% c("BLOCK", "MISS", "SHOT", "GOAL")) {
               if (d |> stringr::str_to_upper() |> stringr::str_detect("OWN GOAL")) {
@@ -221,7 +223,7 @@
         purrr::pmap_chr(
           list(
             t = event_type,
-            d = event_description,
+            d = desc,
             detail = event_detail_1_html
           ),
           function(t, d, detail) {
@@ -271,7 +273,7 @@
       event_detail_3_html =
         purrr::map2_chr(
           event_type,
-          event_description,
+          desc,
           function(t, d) {
             if (t %in% c("MISS", "SHOT", "GOAL")) {
               splits <-
@@ -366,7 +368,7 @@
           event_type == "STOP",
           purrr::pmap_chr(
             list(
-              description = event_description,
+              description = desc,
               next_team = next_faceoff_team,
               next_zone = next_faceoff_zone
             ),
@@ -412,7 +414,7 @@
       event_detail_3_html =
         ifelse(
           event_type == "STOP" &
-            stringr::str_detect(event_description |> stringr::str_to_upper(), "OFF-?SIDE") &
+            stringr::str_detect(desc |> stringr::str_to_upper(), "OFF-?SIDE") &
             !is.na(event_team_html) &
             next_faceoff_zone != "N",
           "INTENTIONAL",
@@ -421,7 +423,7 @@
       event_distance_html =
         ifelse(
           event_type %in% c("MISS", "SHOT", "GOAL"),
-          event_description |>
+          desc |>
             stringr::str_to_upper() |>
             stringr::str_extract("\\d+\\s*FT\\.?") |>
             stringr::str_extract("\\d+") |>
@@ -432,11 +434,13 @@
     ) |>
     dplyr::select(
       -c(
+        desc,
         event_player_1_sweater_html:event_player_3_sweater_html,
         next_faceoff_team,
         next_faceoff_zone
       )
-    )
+    ) |>
+    .manually_clean_html_events(scrape_results$api_results$meta$game_id)
 }
 
 .extract_details_from_api_pbp <- function(api_pbp, scrape_results, verbose = T) {
@@ -610,7 +614,10 @@
           NA_character_
         )
     ) |>
-    dplyr::select(-c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone))
+    dplyr::select(
+      -c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone)
+    ) |>
+    .manually_clean_api_events(scrape_results$api_results$meta$game_id)
 }
 
 .join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp, verbose = T) {
@@ -622,7 +629,7 @@
 
   ret <-
     html_pbp |>
-    dplyr::group_by(game_seconds, event_type) |>
+    dplyr::group_by(game_period, game_seconds, event_type) |>
     dplyr::mutate(event_type_index = cumsum(!is.na(event_type))) |>
     dplyr::full_join(
       api_pbp |>
@@ -650,7 +657,7 @@
               )
             )
         ) |>
-        dplyr::group_by(game_seconds, event_type) |>
+        dplyr::group_by(game_period, game_seconds, event_type) |>
         dplyr::mutate(event_type_index = cumsum(!is.na(event_type))),
       by = dplyr::join_by(game_id, game_period, game_seconds, event_type, event_type_index)
     ) |>
