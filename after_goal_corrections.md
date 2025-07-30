@@ -1,0 +1,37 @@
+# Notes on after goal corrections
+A goal being scored is always followed by either a faceoff or a period/game end.  In the following cases, a goal was scored, but there is no corresponding "after goal" event in either the HTML or API play-by-play.  Below is a comprehensive list of all event corrections manually added to the PBP.  When a faceoff event is added, I just made note of the event without specifying who took/won the faceoff.  For the most part, the missing faceoffs come after a goal was scored in the last second or two of the game.
+- 2024030171
+	- Add FAC at 3599
+- 2024020701
+	- Add FAC at 3598
+- 2023021076
+	- Add FAC at 3599
+- 2023020052
+	- Add FAC at 3599
+- 2023020023
+	- Add FAC at 3599
+- 2023020011
+	- Add FAC at 3599
+- 2022020837
+	- Add FAC at 3599
+- 2021020730
+	- Add FAC at 3599
+- 2020020853
+	- Add FAC at 3599
+- 2020020570
+	- Add FAC at 3599
+- 2020020295
+	- Add FAC at 3599
+- 2020020253
+	- Add FAC at 3599
+- 2019030232
+	- Change GOAL from 3570 to 3571
+- 2019030011
+	- Add FAC at 3599
+- 2019021019
+	- Change GOAL from 1805 to 1806
+- 2019020575
+	- Change GOAL from 3515 to 3516
+- 2019020357
+	- Add FAC at 3599
+	

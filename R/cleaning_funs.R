@@ -440,6 +440,7 @@
         next_faceoff_zone
       )
     ) |>
+    .manually_add_html_events(scrape_results$api_results$meta$game_id) |>
     .manually_clean_html_events(scrape_results$api_results$meta$game_id)
 }
 
@@ -617,6 +618,7 @@
     dplyr::select(
       -c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone)
     ) |>
+    .manually_add_api_events(scrape_results$api_results$meta$game_id) |>
     .manually_clean_api_events(scrape_results$api_results$meta$game_id)
 }
 

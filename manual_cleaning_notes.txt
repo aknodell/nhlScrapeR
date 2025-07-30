@@ -73,7 +73,7 @@ Notes on TOI discrepancies
 		- have all TB change at 2393
 		- Add shifts for Shattenkirk and Coburn at start of third
 	- 2019021047
-		- moved shift start time for Nichushsking from 2175 to 2178
+		- moved shift start time for Nichushskin from 2175 to 2178
 		- moved shift start time for Erik Johnson from 2616 to 2618
 		- changed tanev shift from 2913 to 2929 to edler (edler came out of the penalty box)
 	- 2019021043
@@ -704,26 +704,94 @@ Notes on TOI discrepancies
 	- 2009020494
 		- remove greene's last shift of second period and extend brodeur's second period shift to cover whole period
 		- add greene's first shift of third
+	- 2009020482
+		- have roloson play full second period
+		- add roloson's third period shift
+	- 2009020391
+		- fix blip with no players on ice for either team
+	- 2009020380
+		- all PHX players on ice at EOG missing last shift
+	- 2009020275
+		- missing quick's OT shift
+	- 2009020157
+		- missing mason and mcclement's first shift of second period
+	- 2009020079
+		- missing hiller and eminger's first shift of second period
+	- 2009020002
+		- extend price's second period shift to cover whole second period
+		- add kaberle, price, markov, and spacek's first shift of third period
+	- 2019030151
+		- fix 1 second 5 on 3 blip by extending whitecloud and holden's shift to end at 351 instead of 350
+		- add martinez coming out of penalty box at 3164 (end at 3170)
+		- add smith, stastny, marchessault, and schmidt's first shift of third period
+	- 2017030242
+		- extend fleury and jones's first shifts of OT1 to cover whole period
+		- add fleury, jones, and braun's first shifts of OT2
+	- 2016030185
+		- all EDM players on ice at EOG missing last shift
+	- 2015030143
+		- missing letang and kuntiz's first shift of second period
+	- 2014030135
+		- all PIT players misssing first shift of second period
+	- 2013030236
+		- all CHI players on ice at EOG missing last shift
+	- 2012030162
+		- extend howard's third period shift to cover whole period
+		- add howard and kronwall's first shifts of OT
+	- 2012030153
+		- missing harding's third period
+	- 2010030181
+		- extend rinne's second second period shift to cover rest of period
+		- all NSH players missing first shift of third period
 		
 Additional notes on shifts:
 	- possibly have change be first event of new shift iff there's no faceoff
 	- some kind of special end of period where there's a change after the period ends?
-	- sort order messes up shoot-outs.  worth fixing?
-
-venue
-"home"
-number
-6
-period
-3
-start
-2400
-end
-2446
-dur
-22, 46
-
+	
+	
 Notes on event cleaning
+	- 2022020673
+		- API has FLA blocked shot at 1884
+		- HTML has VGK missed shot at 1884
+		- Missed shot likely a clear after blocked shot while killing the penalty, no VGK player credited in description
+		- Add blocked shot event to HTML scrape and remove the missed shot
+	- 2021021105
+		- Add DELPEN at 3844 to HTML
+	- 2020020865
+		- Add GEND at 3766 to HTML
+	- 2020020860
+		- API has Benn shot at 3869, HTML has it at 3870
+		- Change HTML to match API timestamp
+		- Add GEND at 3870 to HTML
+	- 2020020858
+		- Add GEND at 3600 to HTML
+	- 2020020833
+		- Add GEND at 3609 to HTML
+	- 2020020824
+		- Add GEND at 3900 to HTML
+	- 2020020810
+		- Add GEND at 3600 to HTML
+	- 2020020529
+		- Add GEND at 3773 to HTML
+	- 2020020526
+		- Add GEND at 3627 to HTML
+	- 2020020456
+		- API has STL BLOCK at 2268
+		- HTML has STL block at 2269
+		- Change HTML to match API timestamp
+	- 2019020047
+		- Add DELPEN at 1106 to HTML
+		- Add DELPEN at 2684 to HTML
+	- 2018020989
+		- Add PEND at 3900 to HTML
+	- 2018020733
+		- API has FLA shots at 16 (8476456) and 38 (8476389)
+		- HTML has two FLA shots at 0 Huberdeau/8476456 and Trocheck/8476389
+		- Change HTML to match API timestamps
+	- 2017020008
+		- Add GEND at 3900 to HTML
+
+
 	- 2019021053 
 		- STOP at 2334 was because a goal was scored at 2317, just remove the STOP
 		- Coburn hit on Pastrnak at 2374 probably happens when Coburn is on bench, don't know who hitter was, so just remove
@@ -742,6 +810,8 @@ Notes on event cleaning
 		- PEND at 3900 instead of 3780
 	- 2010021122
 		- EISTR should be at 2279 instead of 1355
+	- 2009030165
+		- hossa's goal counted three times?!
 
 
 
