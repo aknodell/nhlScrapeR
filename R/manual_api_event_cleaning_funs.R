@@ -50,6 +50,62 @@
           )
       )
   }
+  if (g_id == 2018021101) {
+    api_events <-
+      api_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3227 ~ 3228,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020786) {
+    api_events <-
+      api_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3760 ~ 3761,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020630) {
+    api_events <-
+      api_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3874 ~ 3875,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020443) {
+    api_events <-
+      api_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 1313 ~ 1315,
+            game_seconds == 2577 ~ 2580,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020401) {
+    api_events <-
+      api_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 1919 ~ 1920,
+            T ~ game_seconds
+          )
+      )
+  }
   if (g_id == 2015020207) {
     api_events <-
       api_events |>

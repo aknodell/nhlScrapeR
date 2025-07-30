@@ -78,6 +78,28 @@
           )
       )
   }
+  if (g_id == 2018021101) {
+    html_events <-
+      html_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3227 ~ 3228,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020786) {
+    html_events <-
+      html_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3760 ~ 3761,
+            T ~ game_seconds
+          )
+      )
+  }
   if (g_id == 2018020733) {
     html_events <-
       html_events |>
@@ -86,6 +108,40 @@
           dplyr::case_when(
             event_id == 4 ~ 16,
             event_id == 5 ~ 38,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020630) {
+    html_events <-
+      html_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 3874 ~ 3875,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020443) {
+    html_events <-
+      html_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 1313 ~ 1315,
+            game_seconds == 2577 ~ 2580,
+            T ~ game_seconds
+          )
+      )
+  }
+  if (g_id == 2018020401) {
+    html_events <-
+      html_events |>
+      dplyr::mutate(
+        game_seconds =
+          dplyr::case_when(
+            game_seconds == 1919 ~ 1920,
             T ~ game_seconds
           )
       )
