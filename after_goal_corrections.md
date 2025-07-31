@@ -1,5 +1,29 @@
 # Notes on after goal corrections
-A goal being scored is always followed by either a faceoff or a period/game end.  In the following cases, a goal was scored, but there is no corresponding "after goal" event in either the HTML or API play-by-play.  Below is a comprehensive list of all event corrections manually added to the PBP.  When a faceoff event is added, I just made note of the event without specifying who took/won the faceoff.  For the most part, the missing faceoffs come after a goal was scored in the last second or two of the game.
+A goal being scored is always followed by either a faceoff or a period/game end.  In the following cases, a goal was scored, but there is no corresponding "after goal" event in either the HTML or API play-by-play.  Below is a comprehensive list of all event corrections manually made to the PBP.  The most common issues are the faceoff missing entirely and the faceoff having a different timestamp than the goal.  When a new faceoff event is added, I just add the event at center ice without specifying who took/won the faceoff.  When the issue is a timestamp difference, I tended to move the goal event, unless there was reason to believet he faceoff timestamp was erroneous.  For instance, if there were personnel changes at the same time as the goal, but the faceoff was one second later.  If the time difference was more than 2 seconds, I tried to find a highlight of the goal on YouTube to compare timestamps and linked the video in the details.
+
+## Errors by season
+| Season | Error Games |
+| :----- | ----------: |
+| 2009   | 71          |
+| 2010   | 71          |
+| 2011   | 74          |
+| 2012   | 39          |
+| 2013   | 68          |
+| 2014   | 54          |
+| 2015   | 61          |
+| 2016   | 71          |
+| 2017   | 18          |
+| 2018   | 15          |
+| 2019   | 5           |
+| 2020   | 5           |
+| 2021   | 1           |
+| 2022   | 1           |
+| 2023   | 4           |
+| 2024   | 2           |
+|--------|-------------|
+| **Total**  | **560**         |
+
+## Correction details
 - 2024030171
 	- Add FAC at 3599
 - 2024020701
@@ -96,4 +120,9 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 	- Add FAC at 1869
 - 2017020040
 	- Change GOAL from 3869 to 3871
+- 2017020025
+	- Change FAC from 3246 to 3245
+- 2017020020
+	- Change FAC from 1517 to 1513 (https://youtube.com/watch?v=Tc5OUiyiZuI)
+	- Change FAC from 3378 to 3376
 	
