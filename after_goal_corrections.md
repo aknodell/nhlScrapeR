@@ -66,4 +66,34 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 	- Change GOAL from 1919 to 1920
 - 2018020073
 	- Add FAC at 3599
+- 2017030415
+	- Add FAC at 1780
+- 2017021022
+	- Add FAC at 1861
+- 2017020935
+	- Change GOAL from 3899 to 3900
+- 2017020829
+	- Add FAC at 34
+- 2017020778
+	- Add FAC at 946
+- 2017020776
+	- Add FAC at 3599
+- 2017020697
+	- Change GOAL from 2809 to 2811
+- 2017020653
+	- Add FAC at 2142
+- 2017020623
+	- Change GOAL from 1867 to 1868
+- 2017020514
+	- Add FAC at 3507
+- 2017020299
+	- Add FAC at 3384
+- 2017020262
+	- Add FAC at 1021
+- 2017020204
+	- Add FAC at 2673
+- 2017020161
+	- Add FAC at 1869
+- 2017020040
+	- Change GOAL from 3869 to 3871
 	
