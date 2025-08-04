@@ -354,6 +354,9 @@
 - 2016020609
 	- Extend all NJD players whose shift ends at 3539 to end at 3540
 	- All NJD players who shift starts at 3539 start at 3540 instead
+- 2016020536
+	- Extend all MTL players whose shift ends at 1742 to end at 1743
+	- All MTL players who shift starts at 1742 start at 1743 instead
 - 2016020511
 	- Add Khudobin, Krug, McQuaid, Pastrnak, and Bergeron's firs shift of second period
 - 2016020421
