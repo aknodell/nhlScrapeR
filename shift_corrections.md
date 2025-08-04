@@ -364,10 +364,14 @@
 	- Add Khudobin, Krug, McQuaid, Pastrnak, and Bergeron's first shift of second period
 - 2016020508
 	- TBL change at 55 instead of 60
+- 2016020502
+	- NSH change at 2665 instead of 2666
 - 2016020421
 	- All OTT players on ice at EOG missing last shift
 - 2016020419
 	- All WPG players on ice at EOG missing last shift
+- 2016020367
+	- TOR change at 1357 instead of 1358
 - 2016020163
 	- All VAN players on ice at EOG missing last shift
 - 2016020139
