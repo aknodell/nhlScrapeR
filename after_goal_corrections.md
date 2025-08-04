@@ -20,7 +20,6 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 | 2022   | 1           |
 | 2023   | 4           |
 | 2024   | 2           |
-|--------|-------------|
 | **Total**  | **560**         |
 
 ## Correction details
@@ -125,4 +124,70 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 - 2017020020
 	- Change FAC from 1517 to 1513 (https://youtube.com/watch?v=Tc5OUiyiZuI)
 	- Change FAC from 3378 to 3376
-	
+- 2016030245
+	- Change FAC from 1379 to 1375 (https://www.youtube.com/watch?v=XTbWk-fxMIs)
+- 2016030225
+	- Change FAC from 2848 to 2840 (https://www.youtube.com/watch?v=cWfAvTYKxKE)
+- 2016030142
+	- Change FAC from 518 to 511 (https://www.youtube.com/watch?v=qczLih3yaPw)
+- 2016030134
+	- Change GOAL from 3573 to 3574
+- 2016030122
+	- Change GOAL from 2161 to 2162
+- 2016030113
+	- Change FAC from 3336 to 3335
+- 2016021202
+	- Change FAC from 2510 to 2507
+- 2016021182
+	- Change GOAL from 3404 to 3406
+- 2016021114
+	- Change FAC from 2080 to 2079
+- 2016021088
+	- Change GOAL from 1883 to 1884
+- 2016021065
+	- Add FAC at 2147
+- 2016021046
+	- Change GOAL from 2856 to 2857
+- 2016021043
+	- Change FAC from 1361 to 1359
+- 2016021041
+	- Change GOAL from 2151 to 2155
+- 2016021008
+	- Change GOAL from 1105 to 1106
+- 2016020986
+	- Add FAC at 1768
+- 2016020976
+	- Change FAC from 786 to 780
+- 2016020960
+	- Add FAC at 3565
+- 2016020957
+	- Change FAC from 2562 to 2560
+- 2016020954
+	- Change GOAL from 805 to 806
+- 2016020934
+	- Change GOAL from 711 to 712
+	- Change FAC from 714 to 712
+	- Change FAC from 895 to 894
+- 2016020933
+	- Change GOAL from 3516 to 3517
+	- Change GOAL from 3577 to 3578
+- 2016020919
+	- Change GOAL from 3547 to 3548
+- 2016020914
+	- Change FAC from 3600 to 3599
+- 2016020912
+	- Change GOAL from 3263 to 3265
+- 2016020907
+	- Change FAC from 2183 to 2181
+- 2016020906
+	- Change FAC from 1735 to 1734
+- 2016020904
+	- Add FAC at 1013
+- 2016020786
+	- Change GOAL from 534 to 535
+- 2016020776
+	- Change GOAL from 588 to 589
+- 2016020774
+	- Change FAC from 3316 to 3315
+- 2016020763
+	- Change GOAL from 1555 to 1556

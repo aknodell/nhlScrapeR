@@ -37,3 +37,7 @@ game_id, game_period, game_seconds, event_type, coords_x, coords_y, zone_code
 2017020204, 3, 2673, "faceoff", 0, 0, "N"
 2017020161, 2, 1869, "faceoff", 0, 0, "N"
 2017020107, 2, 1361, "faceoff", 0, 0, "N"
+2016021065, 2, 2147, "faceoff", 0, 0, "N"
+2016020986, 2, 1768, "faceoff", 0, 0, "N"
+2016020960, 3, 3565, "faceoff", 0, 0, "N"
+2016020904, 1, 1013, "faceoff", 0, 0, "N"

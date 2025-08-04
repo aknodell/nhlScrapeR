@@ -441,6 +441,7 @@
       )
     ) |>
     .manually_add_html_events(scrape_results$api_results$meta$game_id) |>
+    .manually_change_html_events(scrape_results$api_results$meta$game_id) |>
     .manually_clean_html_events(scrape_results$api_results$meta$game_id)
 }
 
@@ -619,6 +620,7 @@
       -c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone)
     ) |>
     .manually_add_api_events(scrape_results$api_results$meta$game_id) |>
+    .manually_change_api_events(scrape_results$api_results$meta$game_id) |>
     .manually_clean_api_events(scrape_results$api_results$meta$game_id)
 }
 
@@ -719,7 +721,10 @@
     )
 
   if (nrow(ret) > starting_rows) {
-    warning("API contains plays not in HTML play-by-play")
+    warning(
+      "{unique(api_pbp$game_id)} API contains plays not in HTML play-by-play" |>
+        glue::glue()
+    )
   }
 
   ret

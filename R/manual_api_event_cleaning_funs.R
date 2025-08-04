@@ -8,6 +8,15 @@
     )
   )
 
+.manually_changed_api_events <-
+  readr::read_csv(
+    "data/manually_changed_api_events.csv",
+    col_types = readr::cols(
+      .default = readr::col_integer(),
+      event_type = readr::col_character()
+    )
+  )
+
 .manually_add_api_events <- function(api_events, g_id) {
   api_events |>
     dplyr::bind_rows(
@@ -16,163 +25,20 @@
     )
 }
 
+.manually_change_api_events <- function(api_events, g_id) {
+  api_events |>
+    dplyr::left_join(
+      .manually_changed_api_events |>
+        dplyr::filter(game_id == g_id),
+      by = dplyr::join_by(game_id, game_period, game_seconds, event_type)
+    ) |>
+    dplyr::mutate(
+      game_seconds = ifelse(is.na(new_game_seconds), game_seconds, new_game_seconds)
+    ) |>
+    dplyr::select(-new_game_seconds)
+}
+
 .manually_clean_api_events <- function(api_events, g_id) {
-  if (g_id == 2019030232) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3570 ~ 3571,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2019021019) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 1805 ~ 1806,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2019020575) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3515 ~ 3516,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2018021101) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3227 ~ 3228,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2018020786) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3760 ~ 3761,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2018020630) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3874 ~ 3875,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2018020443) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 1313 ~ 1315,
-            game_seconds == 2577 ~ 2580,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2018020401) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 1919 ~ 1920,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020935) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3899 ~ 3900,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020697) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 2809 ~ 2811,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020623) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 1867 ~ 1868,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020040) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3869 ~ 3871,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020025) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 3246 ~ 3245,
-            T ~ game_seconds
-          )
-      )
-  }
-  if (g_id == 2017020020) {
-    api_events <-
-      api_events |>
-      dplyr::mutate(
-        game_seconds =
-          dplyr::case_when(
-            game_seconds == 1517 ~ 1513,
-            game_seconds == 3378 ~ 3376,
-            T ~ game_seconds
-          )
-      )
-  }
   if (g_id == 2015020207) {
     api_events <-
       api_events |>
