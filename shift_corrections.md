@@ -372,6 +372,8 @@
 	- All WPG players on ice at EOG missing last shift
 - 2016020367
 	- TOR change at 1357 instead of 1358
+- 2016020179
+	- ANA change at 3209 instead of 3211
 - 2016020163
 	- All VAN players on ice at EOG missing last shift
 - 2016020139
