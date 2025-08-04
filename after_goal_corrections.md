@@ -191,3 +191,84 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 	- Change FAC from 3316 to 3315
 - 2016020763
 	- Change GOAL from 1555 to 1556
+- 2016020761
+	- Change GOAL from 862 to 864
+- 2016020753
+	- Add FAC at 3455
+- 2016020741
+	- Change GOAL from 2791 to 2792
+- 2016020721
+	- Add FAC at 2799
+- 2016020714
+	- Add FAC at 659
+- 2016020693
+	- Change GOAL from 2820 to 2821
+- 2016020663
+	- Change FAC from 1975 to 1974
+- 2016020661
+	- Change FAC from 2028 to 2027
+- 2016020648
+	- Change GOAL from 240 to 241
+- 2016020641
+	- Change FAC from 1342 to 1341
+- 2016020628
+	- Change FAC from 2776 to 2766
+- 2016020612
+	- Change GOAL from 3547 to 3548
+- 2016020609
+	- Change GOAL from 3535 to 3540
+- 2016020607
+	- Change FAC from 3529 to 3526
+- 2016020606
+	- Change GOAL from 893 to 894
+	- Change GOAL from 1621 to 1622
+- 2016020586
+	- Change GOAL from 566 to 567
+- 2016020554
+	- Change GOAL from 932 to 933
+- 2016020551
+	- Change GOAL from 2120 to 2121
+- 2016020536
+	- Change GOAL from 1742 to 1743
+- 2016020521
+	- Change GOAL from 2108 to 2109
+- 2016020520
+	- Change GOAL from 527 to 528
+- 2016020508
+	- Change FAC from 60 to 55 (https://www.youtube.com/watch?v=kGJ3Fy4Hbi4)
+- 2016020502
+	- Change FAC from 2666 to 2665
+- 2016020463
+	- Change GOAL from 1274 to 1275
+- 2016020367
+	- Change FAC from 1373 to 1358
+	- Change FAC from 1375 to 1373
+- 2016020335
+	- Change GOAL from 2572 to 2573
+- 2016020333
+	- Change FAC from 2230 to 2228
+- 2016020287
+	- Change FAC from 2950 to 2948
+- 2016020284
+	- Change GOAL from 355 to 356
+- 2016020257
+	- Add FAC at 3599
+- 2016020255
+	- Change FAC from 1355 to 1354
+- 2016020243
+	- Change GOAL from 3388 to 3389
+- 2016020242
+	- Change FAC from 2295 to 2294
+- 2016020215
+	- Add FAC at 241
+- 2016020179
+	- Change FAC from 976 to 975
+	- Change FAC from 3211 to 3209
+- 2016020163
+	- Change GOAL from 2658 to 2659
+- 2016020064
+	- Add FAC at 2360
+- 2016020055
+	- Change GOAL from 3142 to 3143
+- 2016020045
+	- Change FAC from 58 to 56
