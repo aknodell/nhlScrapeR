@@ -31,7 +31,26 @@
           )
       ) |>
       # remove all zero-length shifts
-      dplyr::filter(!(shift_start_time == game_period * 1200))
+      dplyr::filter(!(shift_start_time == game_period * 1200)) |>
+      # combine shifts with no breaks into single shifts
+      dplyr::group_by(venue, sweater_number, game_period) |>
+      dplyr::mutate(
+        rest = tidyr::replace_na(shift_start - dplyr::lag(shift_end), 1),
+        group = cumsum(rest != 0)
+      ) |>
+      dplyr::group_by(game_id, game_period, venue, sweater_number, group) |>
+      dplyr::summarise(
+        # game_period = min(game_period),
+        shift_start_time = min(shift_start_time),
+        shift_start_clock = min(shift_start_clock),
+        shift_end_time = max(shift_end_time),
+        shift_end_clock = max(shift_end_clock),
+        duration = sum(duration),
+        shift_start = min(shift_start),
+        shift_end = max(shift_end),
+        .groups = "drop"
+      ) |>
+      dplyr::select(-group)
   } else {
     tibble::tibble()
   }
