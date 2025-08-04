@@ -1753,6 +1753,21 @@
           duration = c(1200, 72, 72, 1, 1, 1)
         )
       )
+  } else if (g_id == 2016020367) {
+    s |>
+      dplyr::mutate(
+        duration =
+          dplyr::case_when(
+            venue == "away" & shift_end_time == 1358 ~ duration - 1,
+            venue == "away" & shift_start_time == 1358 ~ duration + 1,
+            T ~ duration
+          ),
+        shift_start_time =
+          dplyr::case_when(
+            venue == "away" & shift_start_time == 1358 ~ 1357,
+            T ~ shift_start_time
+          )
+      )
   } else if (g_id == 2016020163) {
     s |>
       dplyr::bind_rows(
