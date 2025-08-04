@@ -1633,6 +1633,21 @@
             T ~ shift_start_time
           )
       )
+  } else if (g_id == 2016020609) {
+    s |>
+      dplyr::mutate(
+        duration =
+          dplyr::case_when(
+            venue == "home" & shift_end_time == 3539 ~ duration + 1,
+            venue == "home" & shift_start_time == 3539 ~ duration - 1,
+            T ~ duration
+          ),
+        shift_start_time =
+          dplyr::case_when(
+            venue == "home" & shift_start_time == 3539 ~ 3540,
+            T ~ shift_start_time
+          )
+      )
   } else if (g_id == 2016020511) {
     s |>
       dplyr::bind_rows(
