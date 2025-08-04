@@ -333,18 +333,24 @@
 	- All WPG players on ice at EOG missing last shift
 - 2016021088
 	- Extend all ANA players whose shift ends at 1883 to end at 1884
-	- all ANA players whose shift starts at 1883 start at 1884 instead
+	- All ANA players whose shift starts at 1883 start at 1884 instead
 - 2016020963
   - Have Ganger come out of penalty box at 215 instead of 206
 - 2016020954
-	- Extend all OTT playeres who shift ends at 805 to end at 806
-	- all OTT players whose shift starts at 805 start at 806 instead
+	- Extend all OTT players whose shift ends at 805 to end at 806
+	- All OTT players whose shift starts at 805 start at 806 instead
 - 2016020936
 	- Add Backes and Rask's first shift of second period (55, 1200)
+- 2016020933
+	- Extend all TOR players whose shift ends at 3516 to end at 3517
+	- All TOR players who shift starts at 3516 start at 3517 instead
 - 2016020915
 	- Add Rinne's third period
 - 2016020856
 	- Add Pickard, Rantanen, Duchene, and Comeau's first shift of second period
+- 2016020693
+	- Extend all TOR players whose shift ends at 2820 to end at 2821
+	- All TOR players who shift starts at 2820 start at 2821 instead
 - 2016020511
 	- Add Khudobin, Krug, McQuaid, Pastrnak, and Bergeron's firs shift of second period
 - 2016020421
