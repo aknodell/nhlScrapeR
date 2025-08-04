@@ -357,8 +357,13 @@
 - 2016020536
 	- Extend all MTL players whose shift ends at 1742 to end at 1743
 	- All MTL players who shift starts at 1742 start at 1743 instead
+- 2016020521
+	- Extend all DET players whose shift ends at 2108 to end at 2109
+	- All DET players who shift starts at 2108 start at 2109 instead
 - 2016020511
-	- Add Khudobin, Krug, McQuaid, Pastrnak, and Bergeron's firs shift of second period
+	- Add Khudobin, Krug, McQuaid, Pastrnak, and Bergeron's first shift of second period
+- 2016020508
+	- TBL change at 55 instead of 60
 - 2016020421
 	- All OTT players on ice at EOG missing last shift
 - 2016020419
