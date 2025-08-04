@@ -331,8 +331,14 @@
 	- All OTT players on ice at EOG left ice 5 seconds early
 - 2016021163
 	- All WPG players on ice at EOG missing last shift
+- 2016021088
+	- Extend all ANA players whose shift ends at 1883 to end at 1884
+	- all ANA players whose shift starts at 1883 start at 1884 instead
 - 2016020963
   - Have Ganger come out of penalty box at 215 instead of 206
+- 2016020954
+	- Extend all OTT playeres who shift ends at 805 to end at 806
+	- all OTT players whose shift starts at 805 start at 806 instead
 - 2016020936
 	- Add Backes and Rask's first shift of second period (55, 1200)
 - 2016020915
