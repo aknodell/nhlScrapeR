@@ -383,6 +383,8 @@
 - 2015021224
 	- Extend Dubnyk's first period shift to fill whole period
 	- Had Dubnyk's second period shift start at beginning of period
+- 2015021151
+	- ANA change at 240 instead of 241
 - 2015021049
 	- All EDM players on ice at EOG missing last shift
 - 2015021003

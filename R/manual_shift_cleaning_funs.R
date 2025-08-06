@@ -1846,6 +1846,24 @@
             T ~ shift_start_time
           )
       )
+  } else if (g_id == 2015021151) {
+    s |>
+      dplyr::mutate(
+        duration =
+          dplyr::case_when(
+            venue == "home" & shift_end_time == 241 ~ duration - 1,
+            venue == "home" & shift_start_time == 241 ~ duration + 1,
+            venue == "home" & shift_end_time == 1533 ~ duration - 3,
+            venue == "home" & shift_start_time == 1533 ~ duration + 3,
+            T ~ duration
+          ),
+        shift_start_time =
+          dplyr::case_when(
+            venue == "home" & shift_start_time == 241 ~ 240,
+            venue == "home" & shift_start_time == 1533 ~ 1530,
+            T ~ shift_start_time
+          )
+      )
   } else if (g_id == 2015021049) {
     s |>
       dplyr::bind_rows(
