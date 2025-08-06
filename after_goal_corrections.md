@@ -272,3 +272,128 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 	- Change GOAL from 3142 to 3143
 - 2016020045
 	- Change FAC from 58 to 56
+- 2015021222
+	- Change GOAL from 1258 to 1259
+	- Add FAC at 3584
+- 2015021215
+	- Change FAC from 2247 to 2245
+- 2015021203
+	- Change GOAL from 345 to 346
+- 2015021202
+	- Change FAC from 1623 to 1619
+- 2015021193
+	- Change GOAL from 1667 to 1668
+- 2015021178
+	- Change FAC from 2993 to 2991
+- 2015021174
+	- Add FAC at 2399
+- 2015021151
+	- Change FAC from 242 to 240
+	- Change FAC from 1533 to 1530
+- 2015021144
+	- Change FAC from 3085 to 3086
+- 2015021069
+	- Change GOAL from 2854 to 2855
+- 2015021066
+	- Change FAC from 2461 to 2458
+- 2015021042
+	- Change FAC from 3588 to 3587
+- 2015021029
+	- Change FAC from 2450 to 2449
+- 2015021023
+	- Change FAC from 2494 to 2488
+- 2015020981
+	- Add FAC at 554
+- 2015020961
+	- Change GOAL from 1561 to 1562
+- 2015020945
+	- Change GOAL from 1476 to 1477
+- 2015020942
+	- Change FAC from 327 to 326
+- 2015020859
+	- Change FAC from 3553 to 3552
+- 2015020823
+	- Change GOAL from 957 to 958
+- 2015020817
+	- Change FAC from 319 to 318
+	- Change FAC from 2567 to 2566
+- 2015020794
+	- Change GOAL from 1362 to 1363
+- 2015020670
+	- Change FAC from 2817 to 2815
+- 2015020624
+	- Change GOAL from 1255 to 1256
+- 2015020613
+	- Change FAC from 181 to 180
+- 2015020610
+	- Change FAC from 3576 to 3575
+- 2015020601
+	- Change FAC from 955 to 945
+- 2015020557
+	- Change GOAL from 1245 to 1246
+- 2015020557
+	- Add FAC at 3599
+- 2015020540
+	- Change FAC from 2925 to 2924
+- 2015020523
+	- Add FAC at 2335
+- 2015020495
+	- Change GOAL from 260 to 261
+- 2015020480
+	- Change GOAL from 3186 to 3187
+- 2015020469
+	- Change FAC from 2520 to 2519
+- 2015020467
+	- Change GOAL form 1362 to 1364
+- 2015020441
+	Change GOAL from 2976 to 2977
+- 2015020434
+	- Change GOAL from 1895 to 1896
+- 2015020432
+	- Change GOAL from 3506 to 3507
+- 2015020415
+	- Change GOAL from 2366 to 2367
+- 2015020403
+	- Change FAC from 1237 to 1236
+- 2015020328
+	- Change GOAL from 354 to 355
+- 2015020316
+	- Add FAC at 3599
+- 2015020258
+	- Add FAC at 77
+- 2015020229
+	- Change FAC from 2906 to 2899
+- 2015020196
+	- Add FAC at 3599
+- 2015020194
+	- Change GOAL from 3538 to 3539
+- 2015020154
+	- Change GOAL from 1826 to 1828
+- 2015020153
+	- Change FAC from 3460 to 3459
+- 2015020150
+	- Change FAC from 1907 to 1892
+- 2015020140
+	- Change GOAL from 957 to 958
+- 2015020136
+	- Change FAC from 2489 to 2488
+- 2015020118
+	- Change GOAL from 207 to 208
+- 2015020117
+	- Change FAC from 1571 to 1568
+- 2015020107
+	- Change GOAL from 1351 to 1352
+- 2015020099
+	- Change GOAL from 2975 to 2977
+- 2015020076
+	- Change GOAL from 1471 to 1472
+- 2015020071
+	- Change GOAL from 1347 to 1348
+- 2015020065
+	- Add FAC at 3599
+- 2015020050
+	- Change GOAL from 1502 to 1503
+- 2015020032
+	- Change GOAL from 1488 to 1490
+- 2015020016
+	- Change GOAL from 1595 to 1596
