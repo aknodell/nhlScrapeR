@@ -425,6 +425,8 @@
 	- Have Kinkaid play full second period
 	- Extend all VAN shifts ending at 1407 to end at 1433
 	- Extend all NJD skater shifts ending at 1426 to end at 1433
+- 2015020153
+	- ARI change at 3459 instead of 3460
 - 2015020008
 	- All EDM players on ice at EOG missing last shift
 - 2014021210
