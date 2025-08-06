@@ -385,6 +385,7 @@
 	- Had Dubnyk's second period shift start at beginning of period
 - 2015021151
 	- ANA change at 240 instead of 241
+	- ANA change at 1530 instead of 1533
 - 2015021049
 	- All EDM players on ice at EOG missing last shift
 - 2015021003
@@ -415,6 +416,8 @@
 	- All MIN players on ice at EOG missing last shift
 - 2015020260
 	- Add Bennett's last shift
+- 2015020229
+	- ANA change at 2899 instead of 2901
 - 2015020212
 	- Remove Miller shift ending at 1407
 	- Have Miller play full second period
