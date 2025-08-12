@@ -1115,7 +1115,40 @@
           T ~ NA_character_
         ),
       event_team = ifelse(event_type == "CHANGE", event_team_html, event_team),
-      shift_id = dplyr::dense_rank(shift_id)
+      shift_id = dplyr::dense_rank(shift_id),
+      cumulative_penalty_shots = cumsum(home_skater_strength_state == "Penalty Shot"),
+      shift_id =
+        shift_id +
+        (2 * cumulative_penalty_shots) -
+        (home_skater_strength_state == "Penalty Shot"),
+      shift_id = ifelse(home_skater_strength_state == "Shootout", max(shift_id) + 1, shift_id),
+      dplyr::across(
+        .cols =
+          c(
+            tidyselect::starts_with("away_on"),
+            tidyselect::starts_with("home_on"),
+          ),
+        .fns =
+          (\(api_id, strength_state)
+            ifelse(
+              strength_state %in% c("Penalty Shot", "Shootout"),
+              NA_integer_,
+              api_id)
+          ),
+        strength_state = home_skater_strength_state
+      ),
+      home_skaters_on =
+        ifelse(
+          home_skater_strength_state %in% c("Penalty Shot", "Shootout"),
+          0,
+          home_skaters_on
+        ),
+      away_skaters_on =
+        ifelse(
+          home_skater_strength_state %in% c("Penalty Shot", "Shootout"),
+          0,
+          away_skaters_on
+        )
     ) |>
     dplyr::select(-c(event_id)) |>
     tibble::rowid_to_column(var = "event_id") |>
