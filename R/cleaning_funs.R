@@ -1012,9 +1012,6 @@
         dplyr::select(-game_seconds),
       by = dplyr::join_by(game_period, event_id)
     ) |>
-    # dplyr::group_by(game_period) |>
-    # tidyr::fill(shift_id, .direction = "downup") |>
-    # dplyr::ungroup() |>
     dplyr::bind_rows(
       shift_events |>
         dplyr::mutate(event_id = 0) |>
@@ -1025,6 +1022,9 @@
     dplyr::group_by(game_seconds, game_period) |>
     dplyr::mutate(
       fac_event_id = c(event_id[event_type == "FAC"], NA) |> head(1),
+      is_penalty_shot =
+        stringr::str_to_lower(event_description) |>
+        stringr::str_detect("penalty shot"),
       event_sort_order =
         ifelse(
           has_shootout & game_period == 5,
@@ -1036,7 +1036,11 @@
           ),
           dplyr::case_when(
             event_type %in% c("SHOT", "MISS", "BLOCK", "HIT", "GIVE", "TAKE") ~
-              ifelse(event_id < fac_event_id | is.na(fac_event_id), 1, 7) |>
+              ifelse(
+                event_id < fac_event_id | is.na(fac_event_id),
+                ifelse(is_penalty_shot, 2, 1),
+                7
+              ) |>
               tidyr::replace_na(1),
             event_type %in% c("STOP", "PENL", "GOAL") ~ 2,
             event_type == "PEND" ~ 3,
@@ -1052,10 +1056,7 @@
       game_seconds,
       game_period,
       event_sort_order,
-      # shift_id,
-      # venue,
       event_id
-      # shift_id
     ) |>
     dplyr::mutate(
       max_shift = shift_id |> tidyr::replace_na(-1) |> cummax(),
@@ -1090,8 +1091,7 @@
       event_length = tidyr::replace_na(dplyr::lead(game_seconds) - game_seconds, 0),
       home_skater_strength_state =
         dplyr::case_when(
-          stringr::str_to_lower(event_description) |>
-            stringr::str_detect("penalty shot") ~
+          is_penalty_shot ~
             "Penalty Shot",
           game_period == 5 & has_shootout ~
             "Shootout",
@@ -1119,9 +1119,10 @@
       cumulative_penalty_shots = cumsum(home_skater_strength_state == "Penalty Shot"),
       shift_id =
         shift_id +
-        (2 * cumulative_penalty_shots) -
-        (home_skater_strength_state == "Penalty Shot"),
+        cumulative_penalty_shots,
+        # (home_skater_strength_state == "Penalty Shot"),
       shift_id = ifelse(home_skater_strength_state == "Shootout", max(shift_id) + 1, shift_id),
+      # shift_id = dplyr::dense_rank(shift_id),
       dplyr::across(
         .cols =
           c(
