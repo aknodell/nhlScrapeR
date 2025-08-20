@@ -1,4 +1,4 @@
-get_game_details_api <- function(gm_id, verbose = T) {
+get_game_details_api <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting game {gm_id} details (API)" |> glue::glue())
   }
@@ -57,7 +57,7 @@ get_game_details_api <- function(gm_id, verbose = T) {
   )
 }
 
-get_game_details_html <- function(gm_id, verbose = T) {
+get_game_details_html <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting game {gm_id} details (HTML)" |> glue::glue())
   }
@@ -87,7 +87,7 @@ get_game_details_html <- function(gm_id, verbose = T) {
   )
 }
 
-get_game_details_all_sources <- function(gm_id, verbose = T) {
+get_game_details_all_sources <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting game {gm_id} details" |> glue::glue())
   }
@@ -102,7 +102,7 @@ get_game_details_all_sources <- function(gm_id, verbose = T) {
   )
 }
 
-get_game_details_all_sources_clean <- function(gm_id, verbose = T) {
+get_game_details_all_sources_clean <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting game {gm_id} details (Clean)" |> glue::glue())
   }

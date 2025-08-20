@@ -1,4 +1,4 @@
-get_game_raw_pbp_json_api <- function(gm_id, verbose = T) {
+get_game_raw_pbp_json_api <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting play-by-play JSON (API)")
   }
@@ -20,7 +20,7 @@ get_game_raw_pbp_json_api <- function(gm_id, verbose = T) {
   }
 }
 
-get_game_raw_shifts_json_api <- function(gm_id, verbose = T) {
+get_game_raw_shifts_json_api <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting shift JSON (API)")
   }
@@ -41,7 +41,7 @@ get_game_raw_shifts_json_api <- function(gm_id, verbose = T) {
   }
 }
 
-get_game_raw_info_json_api <- function(gm_id, verbose = T) {
+get_game_raw_info_json_api <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting info JSON (API)")
   }
@@ -90,7 +90,6 @@ extract_team_season_schedule_from_raw_season_schedule_api <- function(season_sch
     tibble::as_tibble()
 }
 
-
 get_full_season_schedule_api <- function(season) {
   get_raw_all_teams_json_api() |>
     extract_all_teams_from_raw_all_teams_json() |>
@@ -138,7 +137,7 @@ get_full_season_schedule_api <- function(season) {
     dplyr::distinct()
 }
 
-extract_game_shifts_from_raw_shifts_json_api <- function(shifts_json, verbose = T) {
+extract_game_shifts_from_raw_shifts_json_api <- function(shifts_json, verbose = F) {
   if (verbose) {
     message("Extracting shifts (API)")
   }
@@ -194,7 +193,7 @@ extract_game_shifts_from_raw_shifts_json_api <- function(shifts_json, verbose = 
   }
 }
 
-extract_game_metadata_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+extract_game_metadata_from_raw_pbp_json_api <- function(pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting metadata (API)")
   }
@@ -215,7 +214,7 @@ extract_game_metadata_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
   )
 }
 
-extract_game_rosters_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+extract_game_rosters_from_raw_pbp_json_api <- function(pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting rosters (API)")
   }
@@ -249,7 +248,7 @@ extract_game_rosters_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
     )
 }
 
-extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting scratches (API)")
   }
@@ -284,7 +283,7 @@ extract_scratches_from_raw_info_json_api <- function(info_json, pbp_json, verbos
   }
 }
 
-extract_coaches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+extract_coaches_from_raw_info_json_api <- function(info_json, pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting coaches (API)")
   }
@@ -305,7 +304,7 @@ extract_coaches_from_raw_info_json_api <- function(info_json, pbp_json, verbose 
   )
 }
 
-extract_referees_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+extract_referees_from_raw_info_json_api <- function(info_json, pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting referees (API)")
   }
@@ -316,7 +315,7 @@ extract_referees_from_raw_info_json_api <- function(info_json, pbp_json, verbose
   )
 }
 
-extract_linesmen_from_raw_info_json_api <- function(info_json, pbp_json, verbose = T) {
+extract_linesmen_from_raw_info_json_api <- function(info_json, pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting linesmen (API)")
   }
@@ -327,7 +326,7 @@ extract_linesmen_from_raw_info_json_api <- function(info_json, pbp_json, verbose
   )
 }
 
-extract_pbp_from_raw_pbp_json_api <- function(pbp_json, verbose = T) {
+extract_pbp_from_raw_pbp_json_api <- function(pbp_json, verbose = F) {
   if (verbose) {
     message("Extracting play-by-play (API)")
   }

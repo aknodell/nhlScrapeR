@@ -1,4 +1,4 @@
-.preclean_shifts_from_html_report <- function(html_shifts, scrape_results, verbose = T) {
+.preclean_shifts_from_html_report <- function(html_shifts, scrape_results, verbose = F) {
   if (verbose) {
     message("Pre-cleaning shifts (HTML)")
   }
@@ -56,7 +56,7 @@
   }
 }
 
-.extract_details_from_html_pbp <- function(html_pbp, scrape_results, verbose = T) {
+.extract_details_from_html_pbp <- function(html_pbp, scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning play-by-play (HTML)")
   }
@@ -464,7 +464,7 @@
     .manually_clean_html_events(scrape_results$api_results$meta$game_id)
 }
 
-.extract_details_from_api_pbp <- function(api_pbp, scrape_results, verbose = T) {
+.extract_details_from_api_pbp <- function(api_pbp, scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning play-by-play (API)")
   }
@@ -643,7 +643,7 @@
     .manually_clean_api_events(scrape_results$api_results$meta$game_id)
 }
 
-.join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp, verbose = T) {
+.join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp, verbose = F) {
   if (verbose) {
     message("Joining HTML and API play-by-plays")
   }
@@ -799,7 +799,7 @@
     dplyr::select(-c(away, home))
 }
 
-.get_shift_events <- function(scrape_results, verbose = T) {
+.get_shift_events <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning shift events for play-by-play")
   }
@@ -888,7 +888,7 @@
     )
 }
 
-.replace_sweater_numbers_with_player_ids <- function(html_pbp, scrape_results, verbose = T) {
+.replace_sweater_numbers_with_player_ids <- function(html_pbp, scrape_results, verbose = F) {
   if (verbose) {
     message("Matching on-ice sweater numbers to API IDs")
   }
@@ -932,7 +932,7 @@
     .split_on_ice_ids()
 }
 
-.get_event_ids_with_shifts <- function(html_pbp, scrape_results, shift_events, verbose = T) {
+.get_event_ids_with_shifts <- function(html_pbp, scrape_results, shift_events, verbose = F) {
   html_pbp <-
     html_pbp |>
     .replace_sweater_numbers_with_player_ids(scrape_results, verbose)
@@ -981,7 +981,7 @@
   )
 }
 
-.add_shifts_to_html_pbp <- function(html_pbp, scrape_results, verbose = T) {
+.add_shifts_to_html_pbp <- function(html_pbp, scrape_results, verbose = F) {
   if (verbose) {
     message("Adding shift events to play-by-play")
   }
@@ -1164,7 +1164,7 @@
     )
 }
 
-.clean_metadata <- function(scrape_results, verbose = T) {
+.clean_metadata <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning metadata")
   }
@@ -1176,7 +1176,7 @@
     )
 }
 
-.clean_game_rosters <- function(scrape_results, verbose = T) {
+.clean_game_rosters <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning game rosters")
   }
@@ -1192,7 +1192,7 @@
     )
 }
 
-.clean_scratches <- function(scrape_results, verbose = T) {
+.clean_scratches <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning scratches")
   }
@@ -1246,7 +1246,7 @@
   }
 }
 
-.clean_coaches <- function(scrape_results, verbose = T) {
+.clean_coaches <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning coaches")
   }
@@ -1294,7 +1294,7 @@
   }
 }
 
-.clean_officials <- function(scrape_results, verbose = T) {
+.clean_officials <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning officials")
   }
@@ -1323,7 +1323,7 @@
   )
 }
 
-.clean_shifts <- function(scrape_results, clean_pbp, verbose = T) {
+.clean_shifts <- function(scrape_results, clean_pbp, verbose = F) {
   if (verbose) {
     message("Cleaning shifts")
   }
@@ -1408,7 +1408,7 @@
   }
 }
 
-.clean_pbp <- function(scrape_results, verbose = T) {
+.clean_pbp <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning play-by-play")
   }
@@ -1432,7 +1432,7 @@
     )
 }
 
-clean_game_details_all_sources <- function(scrape_results, verbose = T) {
+clean_game_details_all_sources <- function(scrape_results, verbose = F) {
   if (verbose) {
     message("Cleaning scrape results")
   }

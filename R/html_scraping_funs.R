@@ -1,4 +1,4 @@
-get_game_rosters_raw_html <- function(gm_id, verbose = T) {
+get_game_rosters_raw_html <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting rosters (HTML)")
   }
@@ -29,7 +29,7 @@ get_game_rosters_raw_html <- function(gm_id, verbose = T) {
     )
 }
 
-get_game_shifts_raw_html <- function(gm_id, side, verbose = T) {
+get_game_shifts_raw_html <- function(gm_id, side, verbose = F) {
   if (verbose) {
     message("Getting {side} shifts (HTML)" |> glue::glue())
   }
@@ -64,7 +64,7 @@ get_game_shifts_raw_html <- function(gm_id, side, verbose = T) {
     )
 }
 
-get_game_pbp_raw_html <- function(gm_id, verbose = T) {
+get_game_pbp_raw_html <- function(gm_id, verbose = F) {
   if (verbose) {
     message("Getting play-by-play (HTML)")
   }
@@ -95,7 +95,7 @@ get_game_pbp_raw_html <- function(gm_id, verbose = T) {
     )
 }
 
-extract_game_metadata_from_raw_html <- function(html, gm_id, verbose = T) {
+extract_game_metadata_from_raw_html <- function(html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting metadata (HTML)")
   }
@@ -122,7 +122,7 @@ extract_game_metadata_from_raw_html <- function(html, gm_id, verbose = T) {
     )
 }
 
-extract_rosters_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+extract_rosters_from_raw_roster_html <- function(roster_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting rosters (HTML)")
   }
@@ -164,7 +164,7 @@ extract_rosters_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
     )
 }
 
-extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting scratches (HTML)")
   }
@@ -237,7 +237,7 @@ extract_scratches_from_raw_roster_html <- function(roster_html, gm_id, verbose =
   }
 }
 
-extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting coaches (HTML)")
   }
@@ -304,7 +304,7 @@ extract_coaches_from_raw_roster_html <- function(roster_html, gm_id, verbose = T
   }
 }
 
-extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting referees (HTML)")
   }
@@ -346,7 +346,7 @@ extract_referees_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
   }
 }
 
-extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = T) {
+extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting linesmen (HTML)")
   }
@@ -388,7 +388,7 @@ extract_linesmen_from_raw_roster_html <- function(roster_html, gm_id, verbose = 
   }
 }
 
-extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbose = T) {
+extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbose = F) {
   if (verbose) {
     message("Extracting {side} shifts (HTML)" |> glue::glue())
   }
@@ -512,7 +512,7 @@ extract_shifts_from_raw_shifts_html <- function(shifts_html, gm_id, side, verbos
   }
 }
 
-extract_pbp_from_raw_pbp_html <- function(pbp_html, gm_id, verbose = T) {
+extract_pbp_from_raw_pbp_html <- function(pbp_html, gm_id, verbose = F) {
   if (verbose) {
     message("Extracting play-by-play (HTML)")
   }
