@@ -43,7 +43,7 @@
     html_events <-
       html_events |>
       dplyr::filter(
-        !(event_id == 208)
+        !(tidyr::replace_na(event_id, -1) == 208)
       )
   }
   if (g_id == 2020020860) {
