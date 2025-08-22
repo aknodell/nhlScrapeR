@@ -202,8 +202,8 @@
           desc,
           function(t, d) {
             if (t %in% c("BLOCK", "MISS", "SHOT", "GOAL")) {
-              if (d |> stringr::str_to_upper() |> stringr::str_detect("OWN GOAL")) {
-                "OWN GOAL"
+              if (d |> stringr::str_to_lower() |> stringr::str_detect("failed attempt")) {
+                "Failed Attempt"
               } else {
                 ret <-
                   d |>
@@ -211,18 +211,20 @@
                   purrr::flatten_chr() |>
                   purrr::pluck(
                     ifelse(
-                      d |> stringr::str_to_upper() |> stringr::str_detect("PENALTY SHOT"),
+                      d |> stringr::str_to_lower() |> stringr::str_detect("penalty shot"),
                       3,
                       2
                     )
                   ) |>
-                  stringr::str_to_upper() |>
+                  stringr::str_to_lower() |>
                   stringr::str_squish()
 
-                if (stringr::str_detect(ret, "(OFF|DEF|NEU)\\.? ZONE")) {
+                if (stringr::str_detect(ret, "((off|def|neu)\\.? zone)|(\\d+\\s*ft\\.)")) {
                   NA_character_
                 } else {
-                  ret
+                  ret |>
+                    stringr::str_replace_all("-+", " ") |>
+                    stringr::str_to_title()
                 }
               }
             } else if (t == "PENL") {
@@ -237,7 +239,10 @@
               NA_character_
             }
           }
-        ),
+        ) |>
+        stringr::str_replace_all("-+", " ") |>
+        stringr::str_squish() |>
+        stringr::str_to_title(),
       event_detail_2_html =
         purrr::pmap_chr(
           list(
@@ -247,48 +252,69 @@
           ),
           function(t, d, detail) {
             if (is.na(detail)) {
-              NA_character_
-            } else if (t %in% c("MISS", "SHOT", "GOAL", "BLOCK")) {
-              ret <-
-                d |>
-                stringr::str_to_upper() |>
-                stringr::str_split(",") |>
-                purrr::flatten_chr() |>
-                purrr::pluck(
-                  ifelse(
-                    d |> stringr::str_to_upper() |> stringr::str_detect("PENALTY SHOT|OWN GOAL"),
-                    2,
-                    3
-                  ),
-                  .default = NA_character_
-                ) |>
-                stringr::str_to_upper() |>
-                stringr::str_squish()
-
-              if (
-                any(
-                  stringr::str_detect(ret, "((OFF|DEF|NEU)\\.? ZONE)|(PENALTY SHOT)"),
-                  ret == "",
-                  is.null(ret),
-                  length(ret) == 0,
-                  is.na(ret)
-                )
-              ) {
+              if (is.na(d)) {
+                NA_character_
+              } else if (d |> stringr::str_to_lower() |> stringr::str_detect("own goal")) {
+                "Own Goal"
+              } else if (d |> stringr::str_to_lower() |> stringr::str_detect("failed attempt")) {
                 NA_character_
               } else {
-                ret
+                NA_character_
+              }
+            } else if (t %in% c("MISS", "SHOT", "GOAL", "BLOCK")) {
+              if (d |> stringr::str_to_lower() |> stringr::str_detect("own goal")) {
+                "Own Goal"
+              } else if (d |> stringr::str_to_lower() |> stringr::str_detect("blocked by teammate")) {
+                "Teammate Blocked"
+              } else if (d |> stringr::str_to_lower() |> stringr::str_detect("failed attempt")) {
+                NA_character_
+              } else {
+                ret <-
+                  d |>
+                  stringr::str_to_lower() |>
+                  stringr::str_split(",") |>
+                  purrr::flatten_chr() |>
+                  purrr::pluck(
+                    ifelse(
+                      d |> stringr::str_to_lower() |> stringr::str_detect("penalty shot"), #|own goal"),
+                      2,
+                      3
+                    ),
+                    .default = NA_character_
+                  ) |>
+                  stringr::str_to_lower() |>
+                  stringr::str_squish()
+
+                if (
+                  any(
+                    stringr::str_detect(ret, "((off|def|neu)\\.? zone)|(penalty shot)|(ft\\.)"),
+                    ret == "",
+                    is.null(ret),
+                    length(ret) == 0,
+                    is.na(ret)
+                  )
+                ) {
+                  NA_character_
+                } else {
+                  ret |>
+                    stringr::str_replace_all("-+", " ") |>
+                    stringr::str_to_title()
+                }
               }
             } else if (t == "PENL") {
               d |>
-                stringr::str_to_upper() |>
-                stringr::str_extract("\\(\\d+\\s+MIN\\)") |>
+                stringr::str_to_lower() |>
+                stringr::str_extract("\\(\\d+\\s+min\\)") |>
                 stringr::str_remove_all("[\\(\\)]") |>
                 stringr::str_squish()
             } else {
               NA_character_
             }
           }
-        ),
+        ) |>
+        stringr::str_replace_all("-+", " ") |>
+        stringr::str_squish() |>
+        stringr::str_to_title(),
       event_detail_3_html =
         purrr::map2_chr(
           event_type,
@@ -297,13 +323,13 @@
             if (t %in% c("MISS", "SHOT", "GOAL")) {
               splits <-
                 d |>
-                stringr::str_to_upper() |>
-                stringr::str_count("(\\d+\\s*FT\\.?)|(\\(\\d+\\))|(FAILED ATTEMPT)")
+                stringr::str_to_lower() |>
+                stringr::str_count("(\\d+\\s*ft\\.?)|(\\(\\d+\\))|(failed attempt)")
 
               ret <-
                 d |>
-                stringr::str_to_upper() |>
-                stringr::str_split("(\\d+\\s*FT\\.?)|(\\(\\d+\\))|(FAILED ATTEMPT)") |>
+                stringr::str_to_lower() |>
+                stringr::str_split("(\\d+\\s*ft\\.?)|(\\(\\d+\\))|(failed attempt)") |>
                 purrr::flatten_chr() |>
                 purrr::pluck(
                   splits + 1,
@@ -321,13 +347,15 @@
               ) {
                 NA_character_
               } else {
-                ret
+                ret |>
+                  stringr::str_replace_all("-+", " ") |>
+                  stringr::str_to_title()
               }
             } else if (t == "BLOCK") {
               ret <-
                 d |>
-                stringr::str_to_upper() |>
-                stringr::str_split("(OFF|DEF|NEU)\\.?\\s*ZONE") |>
+                stringr::str_to_lower() |>
+                stringr::str_split("(off|def|neu)\\.?\\s*zone") |>
                 purrr::flatten_chr() |>
                 purrr::pluck(
                   2,
@@ -351,7 +379,10 @@
               NA_character_
             }
           }
-        ),
+        ) |>
+        stringr::str_replace_all("-+", " ") |>
+        stringr::str_squish() |>
+        stringr::str_to_title(),
       next_faceoff_team = ifelse(event_type == "FAC", event_team_html, NA_character_),
       next_faceoff_zone = ifelse(event_type == "FAC", event_team_zone_html, NA_character_)
     ) |>
@@ -438,7 +469,10 @@
             next_faceoff_zone != "N",
           "INTENTIONAL",
           event_detail_3_html
-        ),
+        ) |>
+        stringr::str_replace_all("-+", " ") |>
+        stringr::str_squish() |>
+        stringr::str_to_title(),
       event_distance_html =
         ifelse(
           event_type %in% c("MISS", "SHOT", "GOAL"),
@@ -680,6 +714,16 @@
               )
             )
         ) |>
+        dplyr::mutate(
+          dplyr::across(
+            .cols = c(event_type_detail, tidyselect::starts_with("event_reason_")),
+            .fns = function(x) {
+              x |>
+                stringr::str_replace_all("-+", " ") |>
+                stringr::str_to_title()
+            }
+          )
+        ) |>
         dplyr::group_by(game_period, game_seconds, event_type) |>
         dplyr::mutate(event_type_index = cumsum(!is.na(event_type))),
       by = dplyr::join_by(game_id, game_period, game_seconds, event_type, event_type_index)
@@ -695,7 +739,15 @@
       event_detail_1 =
         dplyr::case_when(
           event_type %in% c("BLOCK", "MISS", "SHOT", "GOAL", "PENL") ~
-            ifelse(is.na(event_type_detail), event_detail_1_html, event_type_detail),
+            ifelse(
+              is.na(event_type_detail),
+              ifelse(
+                event_detail_1_html != tidyr::replace_na(event_reason_1, ""),
+                event_detail_1_html,
+                NA_character_
+              ),
+              event_type_detail
+            ),
           event_type == "STOP" ~
             event_reason_1,
           T ~ NA_character_
@@ -705,6 +757,12 @@
         dplyr::case_when(
           event_type %in% c("MISS", "SHOT", "GOAL") ~
             ifelse(is.na(event_reason_1), event_detail_2_html, event_reason_1),
+          event_type == "BLOCK" ~
+            ifelse(
+              is.na(event_reason_1),
+              event_detail_2_html,
+              ifelse(event_reason_1 == "Blocked", NA_character_, event_reason_1)
+            ),
           event_type == "PENL" ~ penalty_class,
           event_type == "STOP" ~
             event_reason_2,
@@ -1043,9 +1101,9 @@
               ) |>
               tidyr::replace_na(1),
             event_type %in% c("STOP", "PENL", "GOAL") ~ 2,
-            event_type == "PEND" ~ 3,
+            event_type %in% c("PEND", "EISTR") ~ 3,
             event_type == "GEND" ~ 8,
-            event_type == "PSTR" ~ 5,
+            event_type %in% c("PSTR", "EIEND") ~ 5,
             event_type == "FAC" ~ 6,
             T ~ 4
           )
@@ -1419,12 +1477,7 @@
 
   combined_pbp <- .join_api_pbp_to_html_pbp(clean_html_pbp, clean_api_pbp, verbose)
 
-  # if (nrow(scrape_results$html_reslts$shifts) > 0) {
-  #   combined_pbp <- .add_shifts_to_html_pbp(combined_pbp, scrape_results, verbose)
-  # }
-
   .add_shifts_to_html_pbp(combined_pbp, scrape_results, verbose) |>
-  # combined_pbp |>
     dplyr::select(
       tidyselect::where(
         fn = (\(x) {!all(is.na(x))})
