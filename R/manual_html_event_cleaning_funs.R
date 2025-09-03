@@ -68,6 +68,62 @@
           )
       )
   }
+  if (g_id == 2019030012) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 951 & event_type == "FAC")
+      )
+  }
+  if (g_id == 2019021053) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 2334 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019021041) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 1420 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019020971) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 3135 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019020395) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 1403 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019020318) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 2358 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019020179) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 326 & event_type == "STOP")
+      )
+  }
+  if (g_id == 2019020019) {
+    html_events <-
+      html_events |>
+      dplyr::filter(
+        !(game_seconds == 1786 & event_type == "STOP")
+      )
+  }
   if (g_id == 2018020733) {
     html_events <-
       html_events |>

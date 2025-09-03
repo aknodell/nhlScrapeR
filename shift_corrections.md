@@ -36,6 +36,8 @@
 - 2020020124
 	- Fixed end of Skinner's last shift
 	- Add Ristolainen's first shift of OT
+- 2019030012
+	- End Heiskanen's shift at 931 instead of 964
 - 2019021076
 	- Fix Heiskanen and Johns' weird 3 seconds off in second period
 	- Leave Smith diff (doesn't make sense for NYR to go with 3 defensemen there, possible TMM, but not called and not in PBP)
@@ -216,6 +218,8 @@
 - 2019020331
 	- Extend Anderson's shift to end regulation to EOP
 	- Add Anderson and Pageau's shifts to start OT
+- 2019020318
+	- All changes at 2358 moved to 2359 to line up with faceoff
 - 2019020316
 	- Remove all ANA shifts starting at 2489 except Henrique
 	- Extend Fowler shift starting at 2458 to end at 2534
