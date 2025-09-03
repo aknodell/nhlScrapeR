@@ -1,5 +1,5 @@
 # Notes on after goal corrections
-A goal being scored is always followed by either a faceoff or a period/game end.  In the following cases, a goal was scored, but there is no corresponding "after goal" event in either the HTML or API play-by-play.  Below is a comprehensive list of all event corrections manually made to the PBP.  The most common issues are the faceoff missing entirely and the faceoff having a different timestamp than the goal.  When a new faceoff event is added, I just add the event at center ice without specifying who took/won the faceoff.  When the issue is a timestamp difference, I tended to move the goal event, unless there was reason to believet he faceoff timestamp was erroneous.  For instance, if there were personnel changes at the same time as the goal, but the faceoff was one second later.  If the time difference was more than 2 seconds, I tried to find a highlight of the goal on YouTube to compare timestamps and linked the video in the details.
+A goal being scored is always followed by either a faceoff or a period/game end.  In the following cases, a goal was scored, but there is no corresponding "after goal" event in either the HTML or API play-by-play.  Below is a comprehensive list of all event corrections manually made to the PBP.  The most common issues are the faceoff missing entirely and the faceoff having a different timestamp than the goal.  When a new faceoff event is added, I just add the event at center ice without specifying who took/won the faceoff.  When the issue is a timestamp difference, I tended to move the goal event, unless there was reason to believe the faceoff timestamp was erroneous.  For instance, if there were personnel changes at the same time as the goal, but the faceoff was one second later.  If the play-by-play was confusing, I tried to find video of the goal on YouTube.
 
 ## Errors by season
 | Season | Error Games |
@@ -397,3 +397,5 @@ A goal being scored is always followed by either a faceoff or a period/game end.
 	- Change GOAL from 1488 to 1490
 - 2015020016
 	- Change GOAL from 1595 to 1596
+- 2014030316
+	- Change FAC from 3022 to 3021

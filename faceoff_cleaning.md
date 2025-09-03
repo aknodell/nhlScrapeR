@@ -1,0 +1,66 @@
+# Notes on faceoff event cleaning
+## Correction Details
+- 2022030133
+	- Added FAC at 3598
+- 2022030112
+	- Added FAC at 3597
+- 2022020761
+	- Added FAC at 3492
+- 2021020754
+	- Added FAC at 3599
+- 2019030323
+	- Added FAC at 1199
+- 2019030012
+	- Removed FAC at 951, the FAC is in the VGK defensive zone, and there's a VGK SHOT at the exact same time and no STOP event
+- 2019021053 
+	- STOP at 2334 was because a goal was scored at 2317, just removed the STOP
+- 2019021041
+	- Removed duplicate STOP at 1420
+- 2019020981
+	- Added FAC at 2543
+- 2019020971
+	- Removed duplicate STOP at 3135
+- 2019020861
+	- Added FAC at 1868
+- 2019020859
+	- Added FAC at 1485
+- 2019020616
+	- Move STOP from 589 to 603
+- 2019020610
+	- Added FAC at 815
+- 2019020519
+	- Added FAC at 2567
+- 2019020504
+	- Added FAC at 2399
+- 2019020464
+	- Added FAC at 580
+- 2019020457
+	- Added FAC at 1704
+- 2019020451
+	- Move FAC from 1870 to 1875
+- 2019020432
+	- Move STOP/CHL from 2868 to 2865
+- 2019020402
+	- Move STOP/CHL from 2142 to 2135
+- 2019020395
+	- Remove duplicate STOP at 1403
+- 2019020318
+	- Remove duplicate STOP at 2358
+- 2019020295
+	- Added FAC at 509
+- 2019020220
+	- Added FAC at 2272
+- 2019020201
+	- Added FAC at 1763
+- 2019020179
+	- Remove duplicate STOP at 326
+- 2019020090
+	- Added FAC at 2651
+- 2019020088
+	- Move STOP from 578 to 622
+- 2019020078
+	- Added FAC at 3581
+- 2019020019
+	- Remove duplicate STOP at 1786
+- 2019020008
+	Added FAC at 1238

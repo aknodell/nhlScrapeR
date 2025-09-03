@@ -252,6 +252,15 @@
           duration = c(76)
         )
       )
+  } else if (g_id == 2019030012) {
+    s |>
+    dplyr::mutate(
+      duration =
+        dplyr::case_when(
+          venue == "away" & shift_start_time == 897 & sweater_number == 4 ~ 34,
+          T ~ duration
+        )
+    )
   } else if (g_id == 2019021076) {
     s |>
       dplyr::filter(
@@ -891,6 +900,21 @@
           shift_end_clock = c(3638, 3634),
           duration = c(38, 24)
         )
+      )
+  } else if (g_id == 2019020318) {
+    s |>
+      dplyr::mutate(
+        shift_start_time =
+          dplyr::case_when(
+            shift_start_time == 2358 ~ 2359,
+            T ~ shift_start_time
+          ),
+        duration =
+          dplyr::case_when(
+            (shift_end_time == 2358) ~ duration + 1,
+            (shift_start_time == 2359) ~ duration - 1,
+            T ~ duration
+          )
       )
   } else if (g_id == 2019020316) {
     s |>

@@ -39,6 +39,62 @@
 }
 
 .manually_clean_api_events <- function(api_events, g_id) {
+  if (g_id == 2019030012) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 951 & event_type == "faceoff")
+      )
+  }
+  if (g_id == 2019021053) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 2334 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019021041) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 1420 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019020971) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 3135 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019020395) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 1403 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019020318) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 2358 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019020179) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 326 & event_type == "stoppage")
+      )
+  }
+  if (g_id == 2019020019) {
+    api_events <-
+      api_events |>
+      dplyr::filter(
+        !(game_seconds == 1786 & event_type == "stoppage")
+      )
+  }
   if (g_id == 2015020207) {
     api_events <-
       api_events |>
