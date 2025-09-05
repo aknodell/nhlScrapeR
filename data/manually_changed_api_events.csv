@@ -143,3 +143,5 @@ game_id, game_period, game_seconds, event_type, new_game_seconds
 2015020032, 2, 1488, "goal", 1490
 2015020016, 2, 1595, "goal", 1596
 2014030316, 3, 3022, "faceoff", 3021
+2009021066, 4, 3900, "period-end", 3899
+2009020137, 4, 3802, "period-end", 3900

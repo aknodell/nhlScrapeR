@@ -7,6 +7,19 @@
     scrape_results$api_results$meta |>
     dplyr::pull(session)
 
+  session <- scrape_results$api_results$meta$session
+  game <-
+    scrape_results$api_results$meta$game_id |>
+    as.character() |>
+    stringr::str_sub(start = 7)
+  round <- game |> stringr::str_sub(start = 2, end = 2)
+  series <- game |> stringr::str_sub(start = 3, end = 3)
+  series_game <- game |> stringr::str_sub(start = 4)
+
+  has_shootout <-
+    session != 3 |
+    (session == 3 & round == "0" & series == "0")
+
   if (nrow(html_shifts) > 0) {
     html_shifts |>
       dplyr::mutate(
@@ -22,7 +35,7 @@
               min(
                 start + dur,
                 ifelse(
-                  p == 4 & s == 2,
+                  p == 4 & has_shootout,
                   3900,
                   p * 1200
                 )
@@ -62,10 +75,15 @@
   }
 
   session <- scrape_results$api_results$meta$session
-  game <- scrape_results$api_results$meta$game_id |> as.character()
+  game <-
+    scrape_results$api_results$meta$game_id |>
+    as.character() |>
+    stringr::str_sub(start = 7)
   round <- game |> stringr::str_sub(start = 2, end = 2)
   series <- game |> stringr::str_sub(start = 3, end = 3)
   series_game <- game |> stringr::str_sub(start = 4)
+
+  has_shootout <- session != 3 | (session == 3 & round == "0" & series == "0")
 
   sweater_id_lookup <-
     scrape_results$api_results$rosters |>
@@ -74,30 +92,20 @@
 
   html_pbp <-
     html_pbp |>
+    .manually_add_html_events(scrape_results$api_results$meta$game_id) |>
+    .manually_change_html_events(scrape_results$api_results$meta$game_id) |>
+    .manually_clean_html_events(scrape_results$api_results$meta$game_id) |>
     # dplyr::group_by(game_period) |>
     dplyr::mutate(
+      game_seconds = ifelse(game_period == 5 & has_shootout, 3900, game_seconds),
       game_seconds =
         dplyr::case_when(
           event_type == "PEND" ~
-            ifelse(
-              game_period < 4,
-              # regulation period
-              game_period * 1200,
-              # OT periods
-              ifelse(
-                # last OT period
-                game_period == max(game_period, na.rm = T),
-                # time of last goal scored
-                max(game_seconds, na.rm = T),
-                # not last OT period
-                ifelse(
-                  # 5 minute OT
-                  session != 3 | (session == 3 & round == "0" & series == "0"),
-                  3900,
-                  # 20 minute OT
-                  game_period * 1200
-                )
-              )
+            dplyr::case_when(
+              game_period == 4 & max(game_period, na.rm = T) > 4 & has_shootout  ~
+                3900,
+              game_period == max(game_period, na.rm = T) ~ max(game_seconds, na.rm = T),
+              T ~ game_period * 1200
             ),
           event_type == "GEND" ~ max(game_seconds, na.rm = T),
           T ~ game_seconds
@@ -492,10 +500,7 @@
         next_faceoff_team,
         next_faceoff_zone
       )
-    ) |>
-    .manually_add_html_events(scrape_results$api_results$meta$game_id) |>
-    .manually_change_html_events(scrape_results$api_results$meta$game_id) |>
-    .manually_clean_html_events(scrape_results$api_results$meta$game_id)
+    )
 }
 
 .extract_details_from_api_pbp <- function(api_pbp, scrape_results, verbose = F) {
@@ -504,10 +509,15 @@
   }
 
   session <- scrape_results$api_results$meta$session
-  game <- scrape_results$api_results$meta$game_id |> as.character()
+  game <-
+    scrape_results$api_results$meta$game_id |>
+    as.character() |>
+    stringr::str_sub(start = 7)
   round <- game |> stringr::str_sub(start = 2, end = 2)
   series <- game |> stringr::str_sub(start = 3, end = 3)
   series_game <- game |> stringr::str_sub(start = 4)
+
+  has_shootout <- session != 3 | (session == 3 & round == "0" & series == "0")
 
   home_def_side_lookup <-
     api_pbp |>
@@ -544,6 +554,9 @@
     )
 
   api_pbp |>
+    .manually_add_api_events(scrape_results$api_results$meta$game_id) |>
+    .manually_change_api_events(scrape_results$api_results$meta$game_id) |>
+    .manually_clean_api_events(scrape_results$api_results$meta$game_id) |>
     dplyr::left_join(
       home_team_abb,
       by = dplyr::join_by(event_team)
@@ -567,28 +580,15 @@
     ) |>
     tidyr::fill(c(next_faceoff_x, next_faceoff_team, next_faceoff_zone), .direction = "up") |>
     dplyr::mutate(
+      game_seconds = ifelse(game_period == 5 & has_shootout, 3900, game_seconds),
       game_seconds =
         dplyr::case_when(
           event_type == "period-end" ~
-            ifelse(
-              game_period < 4,
-              # regulation period
-              game_period * 1200,
-              # OT periods
-              ifelse(
-                # last OT period
-                game_period == max(game_period, na.rm = T),
-                # time of last goal scored
-                max(game_seconds, na.rm = T),
-                # not last OT period
-                ifelse(
-                  # 5 minute OT
-                  session != 3 | (session == 3 & round == "0" & series == "0"),
-                  3900,
-                  # 20 minute OT
-                  game_period * 1200
-                )
-              )
+            dplyr::case_when(
+              game_period == 4 & max(game_period, na.rm = T) > 4 & has_shootout  ~
+                3900,
+              game_period == max(game_period, na.rm = T) ~ max(game_seconds, na.rm = T),
+              T ~ game_period * 1200
             ),
           event_type == "game-end" ~ max(game_seconds, na.rm = T),
           T ~ game_seconds
@@ -671,10 +671,7 @@
     ) |>
     dplyr::select(
       -c(home_team_def_zone_imp, next_faceoff_x, next_faceoff_team, next_faceoff_zone)
-    ) |>
-    .manually_add_api_events(scrape_results$api_results$meta$game_id) |>
-    .manually_change_api_events(scrape_results$api_results$meta$game_id) |>
-    .manually_clean_api_events(scrape_results$api_results$meta$game_id)
+    )
 }
 
 .join_api_pbp_to_html_pbp <- function(html_pbp, api_pbp, verbose = F) {
@@ -1049,7 +1046,10 @@
   event_ids_with_shifts <- .get_event_ids_with_shifts(html_pbp, scrape_results, shift_events, verbose)
 
   session <- scrape_results$api_results$meta$session
-  game <- scrape_results$api_results$meta$game_id |> as.character()
+  game <-
+    scrape_results$api_results$meta$game_id |>
+    as.character() |>
+    stringr::str_sub(start = 7)
   round <- game |> stringr::str_sub(start = 2, end = 2)
   series <- game |> stringr::str_sub(start = 3, end = 3)
   series_game <- game |> stringr::str_sub(start = 4)

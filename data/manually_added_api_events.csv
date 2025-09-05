@@ -73,3 +73,4 @@ game_id, game_period, game_seconds, event_type, coords_x, coords_y, zone_code
 2015020258, 1, 77, "faceoff", 0, 0, "N"
 2015020196, 3, 3599, "faceoff", 0, 0, "N"
 2015020065, 3, 3599, "faceoff", 0, 0, "N"
+2009020137, 5, 3900, "period-end", NA, NA, NA
