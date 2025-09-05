@@ -1,4 +1,4 @@
-Package: nhlScrapeR
+Package: nhlPbpScrapeR
 Type: Package
 Title: Scraper for NHL API and HTML reports for 2009-10 season to present
 Version: 0.1.0
